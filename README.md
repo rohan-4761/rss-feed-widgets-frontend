@@ -1,36 +1,72 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# My Next.js App
+
+A modern [Next.js](https://nextjs.org/) application built with TypeScript, featuring multiple pages and a clean component structure.
+
+## Project Structure
+
+```
+my-next-app/
+├── src/
+│   ├── app/                    # App Router directory (Next.js 13+)
+│   │   ├── about/              # About page route
+│   │   ├── contact/            # Contact page route
+│   │   ├── services/           # Services page route
+│   │   ├── globals.css         # Global styles
+│   │   ├── layout.tsx          # Root layout component
+│   │   ├── page.tsx            # Home page
+│   │   └── page.module.css     # Page-specific styles
+│   ├── components/             # Reusable React components
+│   │   └── navbar.tsx          # Navigation component
+│   ├── constants/              # Application constants
+│   ├── css/                    # Stylesheets for pages and components
+│   │   ├── components/         # Component-specific styles
+│   │   ├── pages/              # Page-specific styles
+│   │   └── common.css          # Shared styles across the app
+│   ├── hooks/                  # Custom React hooks
+│   └── utils/                  # Utility functions
+│       └── utils.js            # Helper utilities
+├── public/                     # Static assets
+│   ├── next.svg               # Next.js logo
+│   └── vercel.svg             # Vercel logo
+├── .next/                      # Build output (auto-generated)
+├── package.json               # Dependencies and scripts
+├── tsconfig.json              # TypeScript configuration
+├── next.config.mjs            # Next.js configuration
+└── yarn.lock                  # Dependency lock file
+```
+
+### Key Directories
+
+- **`src/app/`** - Uses Next.js App Router for file-based routing, keep code minimal in these pages
+- **`src/components/`** - Shared UI components across the application
+- **`src/utils/`** - Helper functions and utilities
+- **`public/`** - Static files served directly by the web server, eg. png, svg
+- **`src/css/`** - Centralized styles for pages and components
 
 ## Getting Started
 
-First, run the development server:
+Run the development server:
 
 ```bash
-npm run dev
-# or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+Edit `src/app/page.tsx` to modify the home page - changes auto-reload.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Features
 
-## Learn More
+- **App Router** - Next.js 13+ routing system
+- **TypeScript** - Type-safe development
+- **Custom Components** - Modular UI architecture
+- **Multiple Pages** - About, Contact, and Services routes
 
-To learn more about Next.js, take a look at the following resources:
+## Resources
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Learn Next.js](https://nextjs.org/learn)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Deployment
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Deploy easily on [Vercel](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) - see [deployment docs](https://nextjs.org/docs/deployment) for details.

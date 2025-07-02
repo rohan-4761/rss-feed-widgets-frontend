@@ -14,8 +14,10 @@ export default function CreateWidgetForm() {
 
   return (
     <>
+      {/* Left Side: Form */}
+
       {/* RSS Feed URL */}
-      <section className="bg-white p-6 shadow rounded-lg ">
+      <section className="bg-white p-6 shadow rounded-lg">
         <h2 className="text-xl font-semibold border-b pb-2 mb-4 text-blue-800">
           RSS Feed URL
         </h2>
@@ -44,7 +46,7 @@ export default function CreateWidgetForm() {
       </section>
 
       {/* General Settings */}
-      <section className="bg-white p-6 shadow rounded-lg space-y-6 flex flex-col">
+      <section className="bg-white p-6 shadow rounded-lg space-y-6">
         <h2 className="text-xl font-semibold border-b pb-2 text-blue-800">
           General
         </h2>
@@ -65,7 +67,7 @@ export default function CreateWidgetForm() {
 
           <div>
             <label className="block font-medium text-sm">Height</label>
-            <div className="flex justify-between gap-4">
+            <div className="flex items-center gap-4">
               <label className="flex items-center gap-2">
                 <input type="radio" name="height" defaultChecked /> In Pixels
               </label>
@@ -79,7 +81,7 @@ export default function CreateWidgetForm() {
 
           <div className="grid grid-cols-2 gap-4">
             <label className="flex items-center gap-2">
-              <input type="checkbox" /> Autoslide
+              <input type="checkbox" /> Autoscroll
             </label>
 
             <div>
@@ -207,7 +209,6 @@ export default function CreateWidgetForm() {
               defaultValue={10}
             />
           </div>
-          
         </div>
       </section>
     </>

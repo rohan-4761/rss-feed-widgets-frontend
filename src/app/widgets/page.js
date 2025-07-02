@@ -7,15 +7,15 @@ const Widget = () => {
   const widgets = [
     {
       name: 'Widget 01',
-      feedUrl: 'http://rss.feedspot.com/u/3e1bb...',
+      feedUrl: 'http://rss.feedspot.com/u/3e1bbc74b892525ffed8d02f0157a88a/rss',
     },
     {
       name: 'Widget 02',
-      feedUrl: 'http://rss.feedspot.com/u/3e1bb...',
+      feedUrl: 'http://rss.feedspot.com/u/3e1bbc74b892525ffed8d02f0157a88a/rss',
     },
   ]
   return (
-<div className="ml-16 px-6 py-10">
+<div className="px-6 py-10">
       {/* Title */}
       <h1 className="text-3xl font-bold text-center mb-6">My Widgets</h1>
 

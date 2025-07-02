@@ -14,8 +14,7 @@ export default function Navbar() {
   }
 
   return (
-    <nav className="ml-16 bg-white shadow-sm px-6 py-3 flex items-center justify-between z-40 fixed top-0 w-full">
-      {/* Centered Search */}
+    <nav className="bg-white shadow-sm px-6 py-3 flex items-center justify-between z-40 fixed top-0 w-full">
       <form onSubmit={handleSearch} className="flex-1 w-1/2 mx-auto">
         <input
           type="text"

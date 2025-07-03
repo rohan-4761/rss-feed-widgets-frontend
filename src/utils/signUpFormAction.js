@@ -1,5 +1,6 @@
 "use server";
 
+import { apiRoutes } from "@/constants/routes";
 import {signUpFormSchema} from "@/lib/signUpFormSchema";
  
 
@@ -16,13 +17,12 @@ const signUpFormAction =  async (prevState, formData) => {
             errors: validatedFields.error.flatten().fieldErrors,
         }
     }
-    const apiEndpoint = process.env.API_ENDPOINT + './signup';
     const dataToSend = { ...validatedFields.data };
     delete dataToSend.confirm_password;
 
     try {
 
-        const response = await fetch( apiEndpoint,{
+        const response = await fetch( apiRoutes['SIGNUP'],{
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

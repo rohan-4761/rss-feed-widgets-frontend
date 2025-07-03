@@ -1,14 +1,24 @@
 "use client";
 
-import GridViewList from "@/components/articleComponents/GridViewList";
-import HomeNavbar from "@/components/HomeNavbar";
-import CompactList from "@/components/articleComponents/CompactList";
-import CardViewList from "@/components/articleComponents/CardViewList";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ChevronDown, Filter, X } from "lucide-react";
+import {
+  ChevronDown,
+  Filter,
+  X,
+  AlignJustify,
+  LayoutList,
+  LayoutGrid,
+  House,
+} from "lucide-react";
+
+import GridViewList from "@/components/articleComponents/GridViewList";
+
+import CompactList from "@/components/articleComponents/CompactList";
+import CardViewList from "@/components/articleComponents/CardViewList";
 import { sources, topics } from "@/constants/metadata";
 import { handleFeeds } from "@/utils/handleFeeds";
+import timeAgo from "@/utils/timeAgo";
 
 const Home = () => {
   const [search, setSearch] = useState("");
@@ -16,6 +26,7 @@ const Home = () => {
   const [source, setSource] = useState("");
   const [topic, setTopic] = useState("");
   const [filters, setFilters] = useState({});
+  const [viewStyle, setViewStyle] = useState("Compact");
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -32,14 +43,8 @@ const Home = () => {
         setLoading(true);
         setError(null);
 
-        const response = await handleFeeds({ search, ...filters });
-        const result = await response.json();
-
-        if (result.success) {
-          setArticles(result.data);
-        } else {
-          setError("Failed to fetch articles");
-        }
+        const articles = await handleFeeds({ search, ...filters });
+        setArticles(articles);
       } catch (err) {
         setError("Error fetching articles: " + err.message);
         console.error("Error fetching articles:", err);
@@ -49,7 +54,8 @@ const Home = () => {
     };
 
     fetchArticles();
-  }, [search, filters]); // Changed from object to array
+  }, [search, filters]);
+  // Changed from object to array
 
   // Fixed checkbox handlers to handle single selection properly
   const handleSourceChange = (sourceItem) => {
@@ -70,6 +76,20 @@ const Home = () => {
     setTopic("");
     setFilters({});
   };
+
+  const renderArticles = () => {
+  switch (viewStyle) {
+    case "Card":
+      return <CardViewList articles={articles} timeCalculator={timeAgo} />;
+    case "Compact":
+      return <CompactList articles={articles} timeCalculator={timeAgo} />
+    case "Grid":
+      return <GridViewList articles={articles} timeCalculator={timeAgo} />
+    default:
+      return null;
+  }
+};
+
 
   return (
     <>
@@ -209,38 +229,23 @@ const Home = () => {
 
       <div className="max-w-4xl mx-auto p-4 bg-white mt-20">
         {/* Header */}
-        <div className="mb-6">
+        <div className="mb-6 flex flex-col">
           <div className="flex items-center text-sm text-gray-600 mb-2">
-            <span className="mr-2">🏠</span>
-            <span className="mr-2">All Post</span>
+            <span className="mr-2">
+              <House />
+            </span>
             <span>:</span>
-            {loading && <span className="ml-2 text-blue-600">Loading...</span>}
-            {error && <span className="ml-2 text-red-600">Error: {error}</span>}
+            <span className="ml-2 text-black text-lg "> View Style : </span>
+            <button onClick={()=>{setViewStyle("Compact")}}  className={`ml-4 ${viewStyle == "Compact"? "text-blue-600":"text-black" }`}> <AlignJustify /> </button>
+            <button onClick={()=>{setViewStyle("Card")}}  className={`ml-4 ${viewStyle == "Card"? "text-blue-600":"text-black" }`}>  <LayoutList /> </button>
+            <button onClick={()=>{setViewStyle("Grid")}}  className={`ml-4 ${viewStyle == "Grid"? "text-blue-600":"text-black" }`}> <LayoutGrid /> </button>
           </div>
+          {loading && <span className="ml-2 text-blue-600">Loading...</span>}
+          {error && <span className="ml-2 text-red-600">Error: {error}</span>}
         </div>
 
-        {/* Articles Display */}
-        {/* {articles.length > 0 ? (
-          <CompactList articles={articles} />
-        ) : (
-          !loading && (
-            <div className="text-center py-8 text-gray-500">
-              No articles found. Try adjusting your search or filters.
-            </div>
-          )
-        )} */}
-        {/* {articles.length > 0 ? (
-          <CardViewList articles={articles} />
-        ) : (
-          !loading && (
-            <div className="text-center py-8 text-gray-500">
-              No articles found. Try adjusting your search or filters.
-            </div>
-          )
-        )} */}
-        {/* Uncomment these for other views */}
-                {articles.length > 0 ? (
-        <GridViewList articles={articles} />
+        {articles.length > 0 ? (
+          renderArticles()  
         ) : (
           !loading && (
             <div className="text-center py-8 text-gray-500">

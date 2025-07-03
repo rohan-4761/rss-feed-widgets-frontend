@@ -1,7 +1,7 @@
 import { Star, Bookmark, Share, MoreHorizontal } from 'lucide-react';
 
 
-const CardViewList = ({articles}) => {
+const CardViewList = ({articles, timeCalculator}) => {
   return (
     <div className="space-y-6 mb-8">
         {articles.map((article) => (
@@ -18,14 +18,15 @@ const CardViewList = ({articles}) => {
                 {article.title}
               </h3>
               <div className="flex items-center space-x-2 text-sm text-gray-600 mb-2">
-                <span className="font-medium">{article.publication}</span>
-                <span>by</span>
+                <span className="font-medium">{article.source}</span>
+                <span>{article.author?    "by" : ""}</span>
                 <span className="text-blue-600">{article.author}</span>
                 <span>-</span>
-                <span>{article.timeAgo}</span>
+                <span>{ timeCalculator(article.published_at)
+                  }</span>
               </div>
               <p className="text-sm text-gray-700 leading-relaxed">
-                {article.subtitle}
+                {article.description}
               </p>
             </div>
             <div className="flex-shrink-0">

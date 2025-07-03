@@ -1,36 +1,100 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import Link from 'next/link'
-import { route } from '@/constants/routes'
-
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import { route } from "@/constants/routes";
+import { handleFeeds } from "@/utils/handleFeeds";
+import { SquareArrowUpRight } from "lucide-react";
 
 export default function Navbar() {
-  const [search, setSearch] = useState('')
+  const [search, setSearch] = useState("");
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef();
 
-  const handleSearch = (e) => {
-    e.preventDefault()
-    console.log('Searching:', search)
-  }
+  useEffect(() => {
+    const fetchArticles = async () => {
+      if (!search.trim()) {
+        setArticles([]);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        setError(null);
+
+        const articles = await handleFeeds({ search });
+        setArticles(articles.slice(0, 5)); // limit to top 5
+        setShowDropdown(true);
+      } catch (err) {
+        setError("Error fetching articles: " + err.message);
+        console.error("Error fetching articles:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const timeoutId = setTimeout(fetchArticles, 300); // debounce input
+
+    return () => clearTimeout(timeoutId);
+  }, [search]);
+
+  // Hide dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   return (
     <nav className="bg-white shadow-sm px-6 py-3 flex items-center justify-between z-40 fixed top-0 w-full">
-      <form onSubmit={handleSearch} className="flex-1 w-1/2 mx-auto">
+      <div className="flex-1 w-10/12 mx-auto relative" ref={dropdownRef}>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search..."
           className="w-3/4 px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          onFocus={() => {
+            if (articles.length > 0) setShowDropdown(true);
+          }}
         />
-      </form>
+
+        {showDropdown && articles.length > 0 && (
+          <div className="absolute top-12 left-0 bg-white border border-gray-200 rounded-md shadow-md z-50 max-h-60 overflow-y-auto">
+            {articles.map((article) => (
+              <div key={article.id} className="flex w-full px-4 py-2 hover:bg-gray-100 text-sm text-gray-800">
+                {article.title.length > 70
+                  ? article.title.slice(0, 70) + "..."
+                  : article.title}
+                <Link
+                  href={article.link}
+                  key={article.id}
+                  target="_blank"
+                  className="text-blue-600 ml-3"
+                  rel="noopener noreferrer"
+                >
+                  <SquareArrowUpRight />
+                </Link>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
       {/* Right-aligned Login Button */}
-      <Link href={route["LOGIN"]} className='w-1/2 flex flex-row-reverse'>
-      <button className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-        Login
-      </button>
+      <Link href={route["LOGIN"]} className="w-1/2 flex flex-row-reverse">
+        <button className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+          Login
+        </button>
       </Link>
     </nav>
-  )
+  );
 }

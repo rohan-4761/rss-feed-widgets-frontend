@@ -1,6 +1,6 @@
 import { Star, Bookmark, Share, MoreHorizontal } from "lucide-react";
 
-const GridViewList = ({ articles }) => {
+const GridViewList = ({ articles, timeCalculator }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {articles.map((article) => (
@@ -21,13 +21,13 @@ const GridViewList = ({ articles }) => {
             </h3>
             <div className="flex items-center justify-between text-sm text-gray-600 mb-4">
               <div className="flex items-center space-x-2">
-                <span className="font-medium">{article.publication}</span>
+                <span className="font-medium">{article.source}</span>
                 <span>by</span>
                 <span className="text-blue-600">{article.author}</span>
               </div>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm text-gray-500">{article.timeAgo}</span>
+              <span className="text-sm text-gray-500">{timeCalculator(article.published_at)}</span>
               <div className="flex items-center space-x-2">
                 <Star className="w-4 h-4 text-gray-400 hover:text-yellow-500 cursor-pointer" />
                 <Bookmark className="w-4 h-4 text-gray-400 hover:text-blue-500 cursor-pointer" />

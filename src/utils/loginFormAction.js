@@ -1,5 +1,6 @@
 'use server'
 
+import { apiRoutes } from '@/constants/routes';
 import { loginFormSchema } from '@/lib/loginFormSchema' 
 
 export const loginFormAction = async (prevState, formData) => {
@@ -14,10 +15,9 @@ export const loginFormAction = async (prevState, formData) => {
         };
     }
 
-    const apiEndpoint = process.env.API_ENDPOINT + '/login';
 
     try {
-        const response = await fetch(apiEndpoint, {
+        const response = await fetch(apiRoutes['LOGIN'], {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

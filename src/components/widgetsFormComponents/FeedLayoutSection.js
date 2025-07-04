@@ -29,7 +29,11 @@ const FeedLayoutSection = () => {
     MatrixGridView: [MatrixGridView01, MatrixGridView02],
     CarouselView: [CarouselView01, CarouselView02],
   };
+  
   const renderViewLayouts = (viewLayouts) => {
+    if (!viewExamples[viewLayouts].includes(layout)) {
+      setLayout(viewExamples[viewLayouts][0])
+    }
     return viewExamples[viewLayouts].map((viewLayout, index) => (
       <Image 
         onClick={()=>setLayout(viewLayout)}

@@ -25,7 +25,7 @@ const GeneralSection = () => {
   const [textAlignment, setTextAlignment] = useState("AlignLeft");
   const [border, setBorder] = useState(true);
   const [borderColor, setBorderColor] = useState("#ffffff");
-  const [squareCorner, setSquareCorner] = useState(true);
+  const [squareCorner, setSquareCorner] = useState("Square");
   const [padding, setPadding] = useState(5);
   const [spaceBetweenItems, setSpaceBetweenItems] = useState(10);
 

@@ -1,8 +1,8 @@
 
 const DoubleOption = ({value, label, onChange=()=>{}, options=[]}) => {
   return (
-    <div className="w-full flex items-center justify-between gap-4">
-          <div className=" text-gray-700 w-1/2">{label}</div>
+    <div className="w-full flex items-center justify-between gap-4 not-first:">
+          <div className=" text-gray-700 w-1/2 text-sm">{label}</div>
 
           <button
             className={`text-sm px-2 py-2 rounded-md border transition-all duration-200 w-1/4

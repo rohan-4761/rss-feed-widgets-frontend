@@ -19,6 +19,7 @@ export const handleFeeds = async ({ search, source, topic } = {}) => {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include", // Include cookies in the request
     });
 
     const contentType = response.headers.get("content-type");

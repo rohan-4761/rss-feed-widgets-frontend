@@ -1,5 +1,5 @@
-import { useState } from "react";
-
+import { useSelector, useDispatch } from "react-redux";
+import { updateWidgetState } from "@/lib/features/widgetSlice";
 import {
   AlignCenter,
   AlignJustify,
@@ -15,19 +15,24 @@ import ColorPicker from "@/components/ui/ColorPicker";
 import DoubleOption from "@/components/ui/DoubleOption";
 
 const GeneralSection = () => {
-  const [widthInPixel, setWidthInPixel] = useState(true);
-  const [width, setWidth] = useState(350);
-  const [heightInPixel, setHeightInPixel] = useState(true);
-  const [height, setHeight] = useState(600);
-  const [autoScroll, setAutoScroll] = useState(false);
-  const [sameWindow, setSameWindow] = useState(false);
-  const [fontFamily, setFontFamily] = useState("Arial, sans-serif");
-  const [textAlignment, setTextAlignment] = useState("AlignLeft");
-  const [border, setBorder] = useState(true);
-  const [borderColor, setBorderColor] = useState("#ffffff");
-  const [squareCorner, setSquareCorner] = useState("Square");
-  const [padding, setPadding] = useState(5);
-  const [spaceBetweenItems, setSpaceBetweenItems] = useState(10);
+  const dispatch = useDispatch();
+  const widgetGeneralState = useSelector((state) => state.widget.general);
+
+  const {
+    widthInPixels,
+    width,
+    heightInPixels,
+    height,
+    autoScroll,
+    openLinksInNewTab,
+    fontStyle,
+    textAlignment,
+    border,
+    borderColor,
+    squareCorner,
+    padding,
+    spaceBetweenItems,
+  } = widgetGeneralState;
 
   const allFonts = [
     ...webSafeFonts.sansSerif,
@@ -36,6 +41,7 @@ const GeneralSection = () => {
     ...webSafeFonts.cursiveFantasy,
     ...webSafeFonts.systemStack,
   ];
+
   return (
     <section className="bg-white p-6 shadow rounded-lg space-y-6 flex flex-col mt-6">
       <h2 className="text-xl font-semibold border-b pb-2 text-blue-800 ">
@@ -50,28 +56,48 @@ const GeneralSection = () => {
               type="radio"
               className="form-radio text-blue-600"
               name="widthOption"
-              onClick={() => setWidthInPixel(true)}
-              defaultChecked
+              checked={widthInPixels}
+              onChange={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.widthInPixels",
+                    value: true,
+                  })
+                )
+              }
             />
             <span className="ml-2">In Pixels</span>
           </label>
-          {widthInPixel ? (
+          {widthInPixels && (
             <NumberInput
               label="Width in Pixels"
               min={150}
               max={9999}
               value={width}
-              onChange={setWidth}
+              onChange={(value) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.width",
+                    value,
+                  })
+                )
+              }
             />
-          ) : (
-            <></>
           )}
           <label className="inline-flex items-center">
             <input
               type="radio"
               className="form-radio text-blue-600"
               name="widthOption"
-              onClick={() => setWidthInPixel(false)}
+              checked={!widthInPixels}
+              onChange={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.widthInPixels",
+                    value: false,
+                  })
+                )
+              }
             />
             <span className="ml-2">Responsive</span>
           </label>
@@ -84,8 +110,15 @@ const GeneralSection = () => {
               type="radio"
               className="form-radio text-blue-600"
               name="heightOption"
-              onClick={() => setHeightInPixel(true)}
-              defaultChecked
+              checked={heightInPixels}
+              onChange={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.heightInPixels",
+                    value: true,
+                  })
+                )
+              }
             />
             <span className="ml-2">In Pixels</span>
           </label>
@@ -94,21 +127,44 @@ const GeneralSection = () => {
               type="radio"
               className="form-radio text-blue-600"
               name="heightOption"
-              onClick={() => setHeightInPixel(false)}
+              checked={!heightInPixels}
+              onChange={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.heightInPixels",
+                    value: false,
+                  })
+                )
+              }
             />
             <span className="ml-2">In Posts</span>
           </label>
           <NumberInput
-            label={`Height in ${heightInPixel ? "Pixels" : "Posts"}`}
+            label={`Height in ${heightInPixels ? "Pixels" : "Posts"}`}
             min={150}
             max={9999}
             value={height}
-            onChange={setHeight}
+            onChange={(value) =>
+              dispatch(
+                updateWidgetState({
+                  path: "general.height",
+                  value,
+                })
+              )
+            }
           />
         </div>
+
         <ToggleButton
           value={autoScroll}
-          onToggle={setAutoScroll}
+          onToggle={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "general.autoScroll",
+                value,
+              })
+            )
+          }
           text="Autoscroll"
         />
 
@@ -116,8 +172,15 @@ const GeneralSection = () => {
           <label className="w-7/10 text-sm">Open Links</label>
           <select
             className="w-3/10 border p-1 rounded"
-            value={sameWindow ? "same" : "new"}
-            onChange={(e) => setSameWindow(e.target.value === "same")}
+            value={openLinksInNewTab ? "new" : "same"}
+            onChange={(e) =>
+              dispatch(
+                updateWidgetState({
+                  path: "general.openLinksInNewTab",
+                  value: e.target.value === "new",
+                })
+              )
+            }
           >
             <option value="new">New window</option>
             <option value="same">Same window</option>
@@ -128,8 +191,15 @@ const GeneralSection = () => {
           <label className="w-7/10 text-sm">Font Style</label>
           <select
             className="w-3/10 border p-1 rounded"
-            value={fontFamily}
-            onChange={(e) => setFontFamily(e.target.value)}
+            value={fontStyle}
+            onChange={(e) =>
+              dispatch(
+                updateWidgetState({
+                  path: "general.fontStyle",
+                  value: e.target.value,
+                })
+              )
+            }
           >
             {allFonts.map((font) => (
               <option value={font} key={font}>
@@ -138,36 +208,65 @@ const GeneralSection = () => {
             ))}
           </select>
         </div>
+
         <div className="flex justify-between">
           <label className="text-sm">Text Alignment</label>
           <div className="flex gap-2 justify-around">
             <button
-              className={"border px-2 py-1 rounded"}
-              onClick={() => setTextAlignment("AlignLeft")}
+              className="border px-2 py-1 rounded"
+              onClick={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.textAlignment",
+                    value: "AlignLeft",
+                  })
+                )
+              }
             >
               <AlignLeft
                 color={textAlignment === "AlignLeft" ? "blue" : "black"}
               />
             </button>
             <button
-              className={"border px-2 py-1 rounded"}
-              onClick={() => setTextAlignment("AlignRight")}
+              className="border px-2 py-1 rounded"
+              onClick={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.textAlignment",
+                    value: "AlignRight",
+                  })
+                )
+              }
             >
               <AlignRight
                 color={textAlignment === "AlignRight" ? "blue" : "black"}
               />
             </button>
             <button
-              className={"border px-2 py-1 rounded"}
-              onClick={() => setTextAlignment("AlignCenter")}
+              className="border px-2 py-1 rounded"
+              onClick={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.textAlignment",
+                    value: "AlignCenter",
+                  })
+                )
+              }
             >
               <AlignCenter
                 color={textAlignment === "AlignCenter" ? "blue" : "black"}
               />
             </button>
             <button
-              className={"border px-2 py-1 rounded"}
-              onClick={() => setTextAlignment("AlignJustify")}
+              className="border px-2 py-1 rounded"
+              onClick={() =>
+                dispatch(
+                  updateWidgetState({
+                    path: "general.textAlignment",
+                    value: "AlignJustify",
+                  })
+                )
+              }
             >
               <AlignJustify
                 color={textAlignment === "AlignJustify" ? "blue" : "black"}
@@ -175,19 +274,45 @@ const GeneralSection = () => {
             </button>
           </div>
         </div>
-        <ToggleButton value={border} onToggle={setBorder} text="Border" />
-        {border ? (
+
+        <ToggleButton
+          value={border}
+          onToggle={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "general.border",
+                value,
+              })
+            )
+          }
+          text="Border"
+        />
+
+        {border && (
           <ColorPicker
             value={borderColor}
-            onChange={setBorderColor}
-            label={"Border Colour"}
+            onChange={(value) =>
+              dispatch(
+                updateWidgetState({
+                  path: "general.borderColor",
+                  value,
+                })
+              )
+            }
+            label="Border Colour"
           />
-        ) : (
-          <></>
         )}
+
         <DoubleOption
           value={squareCorner}
-          onChange={setSquareCorner}
+          onChange={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "general.squareCorner",
+                value,
+              })
+            )
+          }
           options={["Square", "Rounded"]}
           label="Corner"
         />
@@ -198,16 +323,43 @@ const GeneralSection = () => {
         <div className="flex items-center gap-2">
           <input
             type="text"
-            placeholder="Enter RSS Feed Url"
+            placeholder="Enter Custom CSS URL"
             className="w-full border border-gray-300 p-2 rounded"
           />
           <button className="bg-blue-600 text-white px-4 py-2 rounded">
             <Link />
           </button>
         </div>
-        <NumberInput value={padding} onChange={setPadding} label={"Padding"} min={0} max={9999}/>
-        <NumberInput value={spaceBetweenItems} onChange={setSpaceBetweenItems} label={"Space Between Items"} min={0} max={9999}/>
-        
+
+        <NumberInput
+          value={padding}
+          onChange={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "general.padding",
+                value,
+              })
+            )
+          }
+          label="Padding"
+          min={0}
+          max={9999}
+        />
+
+        <NumberInput
+          value={spaceBetweenItems}
+          onChange={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "general.spaceBetweenItems",
+                value,
+              })
+            )
+          }
+          label="Space Between Items"
+          min={0}
+          max={9999}
+        />
       </div>
     </section>
   );

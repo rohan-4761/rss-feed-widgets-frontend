@@ -1,6 +1,9 @@
 "use client";
 
 import { useState } from "react";
+import {Provider} from "react-redux";
+
+import  widgetStore from "@/lib/store";
 import VideoModal from "@/components/VideoModal";
 import CreateWidgetForm from "@/components/CreateWidgetForm";
 import {
@@ -19,6 +22,7 @@ const Create = () => {
   };
 
   return (
+    <Provider store={widgetStore}>
     <div className="min-h-screen bg-white p-10">
       <div className="max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-center mb-2">
@@ -84,6 +88,7 @@ const Create = () => {
         </div>
       </div>
     </div>
+    </Provider>
   );
 };
 

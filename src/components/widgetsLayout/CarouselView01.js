@@ -1,10 +1,54 @@
-
 import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { useSelector } from 'react-redux';
+import formatDate from '../../utils/formatDate';
 
 const CarouselView01 = ({ feeds, autoPlay = false, interval = 3000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
+
+  // Get styling properties from widget state
+  const widgetState = useSelector((state) => state.widget);
+  const {
+    widgetTitle,
+    general: {
+      width,
+      height,
+      widthInPixels,
+      heightInPixels,
+      fontStyle,
+      textAlignment,
+      border,
+      borderColor,
+      squareCorner,
+      padding,
+      spaceBetweenItems,
+    },
+    feedTitle: {
+      feedTitleFontSize,
+      feedTitleBold,
+      feedTitleBgColor,
+      feedTitleFontColor,
+    },
+    feedContent: {
+      contentbgColor,
+      showAuthorAndDate,
+      dateFormat,
+      displayNoOfPost,
+      title: {
+        showContentTitle,
+        contentTitleBold,
+        contentTitleFontSize,
+        contentTitleColor,
+      },
+      description: {
+        showContentDesc,
+        contentDescBold,
+        contentDescFontSize,
+        contentDescColor,
+      },
+    },
+  } = widgetState;
 
   useEffect(() => {
     if (isAutoPlaying && feeds.length > 0) {
@@ -33,40 +77,115 @@ const CarouselView01 = ({ feeds, autoPlay = false, interval = 3000 }) => {
     setIsAutoPlaying(!isAutoPlaying);
   };
 
+  // Helper function to get text alignment class
+  const getTextAlignmentClass = () => {
+    switch (textAlignment) {
+      case 'AlignLeft':
+        return 'text-left';
+      case 'AlignCenter':
+        return 'text-center';
+      case 'AlignRight':
+        return 'text-right';
+      default:
+        return 'text-left';
+    }
+  };
+
   if (!feeds || feeds.length === 0) {
     return (
-      <div className="bg-white rounded-lg shadow-lg overflow-hidden max-w-2xl mx-auto p-8 text-center">
-        <p className="text-gray-500">No content available</p>
+      <div 
+        className={`shadow-lg overflow-hidden mx-auto text-center ${getTextAlignmentClass()}`}
+        style={{
+          width: widthInPixels ? `${width}px` : `${width}%`,
+          height: heightInPixels ? `${height}px` : `${height}%`,
+          fontFamily: fontStyle,
+          backgroundColor: contentbgColor,
+          border: border ? `1px solid ${borderColor}` : 'none',
+          borderRadius: squareCorner ? '0' : '8px',
+          padding: `${padding}px`,
+        }}
+      >
+        <p 
+          style={{
+            fontSize: `${contentDescFontSize}px`,
+            color: contentDescColor,
+          }}
+        >
+          No content available
+        </p>
       </div>
     );
   }
 
   const currentFeed = feeds[currentIndex];
+  const displayFeeds = feeds.slice(0, displayNoOfPost || feeds.length);
 
   return (
-    <div className="bg-white shadow-lg overflow-hidden max-w-2xl mx-auto">
+    <div 
+      className="shadow-lg overflow-hidden mx-auto"
+      style={{
+        width: widthInPixels ? `${width}px` : `${width}%`,
+        height: heightInPixels ? `${height}px` : `${height}%`,
+        fontFamily: fontStyle,
+        backgroundColor: contentbgColor,
+        border: border ? `1px solid ${borderColor}` : 'none',
+        borderRadius: squareCorner ? '0' : '8px',
+      }}
+    >
       {/* Header */}
-      <div className="bg-white text-blue-600 p-4 flex justify-between items-center">
-        <h2 className="text-lg font-semibold">Widget Title</h2>
+      <div 
+        className={`flex justify-between items-center ${getTextAlignmentClass()}`}
+        style={{
+          backgroundColor: feedTitleBgColor,
+          color: feedTitleFontColor,
+          padding: `${padding}px`,
+          marginBottom: `${spaceBetweenItems}px`,
+        }}
+      >
+        <h2 
+          style={{
+            fontSize: `${feedTitleFontSize}px`,
+            fontWeight: feedTitleBold ? 'bold' : 'normal',
+            color: feedTitleFontColor,
+          }}
+        >
+          {widgetTitle}
+        </h2>
         <div className="flex items-center space-x-2">
           <button
             onClick={toggleAutoPlay}
             className="p-2 rounded-full hover:bg-white hover:bg-opacity-20 transition-colors"
+            style={{ color: feedTitleFontColor }}
           >
             {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
           </button>
-          <span className="text-sm opacity-80">
-            {currentIndex + 1} / {feeds.length}
+          <span 
+            className="text-sm opacity-80"
+            style={{
+              color: feedTitleFontColor,
+              fontSize: `${feedTitleFontSize - 4}px`,
+            }}
+          >
+            {currentIndex + 1} / {displayFeeds.length}
           </span>
         </div>
       </div>
 
       {/* Main Image Display */}
-      <div className="relative aspect-video bg-gray-100">
+      <div 
+        className="relative aspect-video bg-gray-100"
+        style={{
+          borderRadius: squareCorner ? '0' : '8px',
+          margin: `0 ${padding}px`,
+        }}
+      >
         <img
           src={currentFeed.image}
           alt={currentFeed.title}
           className="w-full h-full object-cover"
+          style={{
+            borderRadius: squareCorner ? '0' : '8px',
+          }}
         />
         
         {/* Navigation Arrows */}
@@ -85,23 +204,86 @@ const CarouselView01 = ({ feeds, autoPlay = false, interval = 3000 }) => {
         </button>
 
         {/* Article Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent text-white p-4">
-          <h3 className="text-lg font-semibold mb-2 line-clamp-2">{currentFeed.title}</h3>
-          <div className="flex items-center justify-between text-sm text-gray-300">
-            <span>{currentFeed.author}</span>
-            <span>{currentFeed.source}</span>
-          </div>
-          <div className="text-xs text-gray-400 mt-1">
-            {new Date(currentFeed.published_at).toLocaleDateString()}
-          </div>
+        <div 
+          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent text-white ${getTextAlignmentClass()}`}
+          style={{
+            padding: `${padding}px`,
+            borderRadius: squareCorner ? '0' : '0 0 8px 8px',
+          }}
+        >
+          {showContentTitle && (
+            <h3 
+              className="mb-2 line-clamp-2"
+              style={{
+                fontSize: `${contentTitleFontSize}px`,
+                fontWeight: contentTitleBold ? 'bold' : 'normal',
+                color: contentTitleColor,
+              }}
+            >
+              {currentFeed.title}
+            </h3>
+          )}
+          
+          {showAuthorAndDate && (
+            <div className="flex items-center justify-between text-sm">
+              <span 
+                style={{
+                  fontSize: `${contentDescFontSize}px`,
+                  fontWeight: contentDescBold ? 'bold' : 'normal',
+                  color: contentDescColor,
+                }}
+              >
+                {currentFeed.author}
+              </span>
+              <span 
+                style={{
+                  fontSize: `${contentDescFontSize}px`,
+                  fontWeight: contentDescBold ? 'bold' : 'normal',
+                  color: contentDescColor,
+                }}
+              >
+                {currentFeed.source}
+              </span>
+            </div>
+          )}
+          
+          {showAuthorAndDate && (
+            <div 
+              className="text-xs mt-1"
+              style={{
+                fontSize: `${contentDescFontSize - 2}px`,
+                color: contentDescColor,
+              }}
+            >
+              {formatDate(currentFeed.published_at, dateFormat)}
+            </div>
+          )}
         </div>
       </div>
 
-      {/* Thumbnail Navigation */}
-      
-
       {/* Progress Indicators */}
-      
+      <div 
+        className="flex justify-center space-x-2"
+        style={{
+          padding: `${padding}px`,
+          marginTop: `${spaceBetweenItems}px`,
+        }}
+      >
+        {displayFeeds.map((_, index) => (
+          <button
+            key={index}
+            onClick={() => goToSlide(index)}
+            className={`w-3 h-3 rounded-full transition-all duration-200 ${
+              index === currentIndex
+                ? 'scale-110'
+                : 'hover:bg-gray-400'
+            }`}
+            style={{
+              backgroundColor: index === currentIndex ? contentTitleColor : '#d1d5db',
+            }}
+          />
+        ))}
+      </div>
     </div>
   );
 };

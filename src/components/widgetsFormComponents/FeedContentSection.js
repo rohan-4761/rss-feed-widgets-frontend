@@ -1,82 +1,148 @@
-import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
+import { updateWidgetState } from "@/lib/features/widgetSlice";
 import ToggleButton from "@/components/ui/ToggleButton";
 import ColorPicker from "@/components/ui/ColorPicker";
 import NumberInput from "@/components/ui/NumberInput";
 import DoubleOption from "@/components/ui/DoubleOption";
 
 const FeedContentSection = () => {
-  const [displayNoOfPost, setDisplayNoOfPost] = useState(10);
-  const [displayLink, setDisplayLink] = useState(false);
-  const [readMore, setReadMore] = useState(false);
-  const [showAuthor, setAhowAuthor] = useState(false);
-  const [backgroundColor ,setBackgroundColor] = useState("#ffffff");
-  const [showTitle, setShowTitle] = useState(true);
-  const [showDesc, setShowDesc] = useState(true);
-  const [boldTitle, setBoldTitle] = useState(false);
-  const [boldDesc, setBoldDesc] = useState(false);
-  const [titleColor, setTitleColor] = useState("#000000");
-  const [fontColor, setFontColor] = useState("#000000");
-  const [maxChars, setMaxChars] = useState(100);
-  const [descFontSize, setDescFontSize] = useState(12);
-  const [titleSize, setTitleSize] = useState(18);
-  const [dateFormat, setDateFormat] = useState("Month, DD YYYY");
+  const dispatch = useDispatch();
+  const widgetContentState = useSelector((state) => state.widget.feedContent);
+
   return (
     <section className="bg-white p-6 shadow rounded-lg space-y-6 mt-6">
       <h2 className="text-xl font-semibold border-b pb-2 text-blue-800 ">
         Feed Content
       </h2>
       <div className="space-y-4">
-        <NumberInput label="Display No. of Post" value={displayNoOfPost} onChange={setDisplayNoOfPost} max={250} />
+        <NumberInput
+          label="Display No. of Post"
+          value={widgetContentState.displayNoOfPost}
+          onChange={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "feedContent.displayNoOfPost",
+                value: value,
+              })
+            )
+          }
+          max={250}
+        />
         <ToggleButton
-          value={displayLink}
-          onToggle={setDisplayLink}
+          value={widgetContentState.displayLink}
+          onToggle={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "feedContent.displayLink",
+                value: value,
+              })
+            )
+          }
           text="Display link to original content"
         />
         <ToggleButton
-          value={readMore}
-          onToggle={setReadMore}
+          value={widgetContentState.displayReadMore}
+          onToggle={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "feedContent.displayReadMore",
+                value: value,
+              })
+            )
+          }
           text="Display Read more."
         />
         <ColorPicker
-              value={backgroundColor}
-              onChange={setBackgroundColor}
-              label="Background Color"
+          value={widgetContentState.contentbgColor}
+          onChange={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "feedContent.contentbgColor",
+                value: value,
+              })
+            )
+          }
+          label="Background Color"
         />
         <ToggleButton
-          value={showAuthor}
-          onToggle={setAhowAuthor}
+          value={widgetContentState.showAuthorAndDate}
+          onToggle={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "feedContent.showAuthorAndDate",
+                value: value,
+              })
+            )
+          }
           text="Show Author & Date"
         />
-        <DoubleOption
-          label="Date Format"
-          value={dateFormat}
-          onChange={setDateFormat}
-          options={["Month, DD YYYY", "DD-MM-YYYY"]}
-        />
+        {widgetContentState.showAuthorAndDate && (
+          <DoubleOption
+            label="Date Format"
+            value={widgetContentState.dateFormat}
+            onChange={(value) =>
+              dispatch(
+                updateWidgetState({
+                  path: "feedContent.dateFormat",
+                  value: value,
+                })
+              )
+            }
+          />
+        )}
 
         <h2 className="text-xl font-semibold border-b pb-2 border-dashed text-blue-800"></h2>
         <ToggleButton
-          value={showTitle}
-          onToggle={setShowTitle}
+          value={widgetContentState.title.showContentTitle}
+          onToggle={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "feedContent.title.showContentTitle",
+                value: value,
+              })
+            )
+          }
           text="Show Title"
         />
-        {showTitle ? (
+        {widgetContentState.title.showContentTitle ? (
           <>
             <ToggleButton
-              value={boldTitle}
-              onToggle={setBoldTitle}
+              value={widgetContentState.title.contentTitleBold}
+              onToggle={(value) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.title.contentTitleBold",
+                    value: value,
+                  })
+                )
+              }
               text="Bold Title"
             />
             <NumberInput
               label="Title Size"
-              value={titleSize}
-              onChange={setTitleSize}
+              value={widgetContentState.title.contentTitleFontSize}
+              onChange={(value) => {
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.title.contentTitleFontSize",
+                    value: value,
+                  })
+                );
+              }}
               min={1}
               max={250}
             />
             <ColorPicker
-              value={titleColor}
-              onChange={setTitleColor}
+              value={widgetContentState.title.contentTitleColor}
+              onChange={(value) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.title.contentTitleColor",
+                    value: value,
+                  })
+                )
+              }
               label="Title Color"
             />
           </>
@@ -85,32 +151,67 @@ const FeedContentSection = () => {
         )}
         <h2 className="text-xl font-semibold border-b pb-2 border-dashed text-blue-800"></h2>
         <ToggleButton
-          value={showDesc}
-          onToggle={setShowDesc}
+          value={widgetContentState.description.showContentDesc}
+          onToggle={(value) =>
+            dispatch(
+              updateWidgetState({
+                path: "feedContent.description.showContentDesc",
+                value: value,
+              })
+            )
+          }
           text="Show Description"
         />
-        {showDesc ? (
+        {widgetContentState.description.showContentDesc ? (
           <>
             <ToggleButton
-              value={boldDesc}
-              onToggle={setBoldDesc}
+              value={widgetContentState.description.contentDescBold}
+              onToggle={(values) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.description.contentDescBold",
+                    value: values,
+                  })
+                )
+              }
               text="Bold Description"
             />
             <NumberInput
               label="Max characters Description"
-              value={maxChars}
-              onChange={setMaxChars}
+              value={widgetContentState.description.contentDescMaxChars}
+              onChange={(values) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.description.contentDescMaxChars",
+                    value: values,
+                  })
+                )
+              }
               min={3}
             />
             <NumberInput
               label="Font Size"
-              value={descFontSize}
-              onChange={setDescFontSize}
+              value={widgetContentState.description.contentDescFontSize}
+              onChange={(value) => {
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.description.contentDescFontSize",
+                    value: value,
+                  })
+                );
+              }}
               max={250}
             />
             <ColorPicker
-              value={fontColor}
-              onChange={setFontColor}
+              value={widgetContentState.description.contentDescColor}
+              onChange={(value) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.description.contentDescColor",
+                    value: value,
+                  })
+                )
+              }
               label="Font Color"
             />
           </>

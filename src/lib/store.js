@@ -1,7 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
+import widgetReducer from "@/lib/features/widgetSlice";
 
-export const makeStore = () => {
-    return configureStore({
-        reducer: {}
-    })
-}
+const widgetStore = configureStore({
+  reducer: {
+    widget: widgetReducer,
+  },
+});
+
+export default widgetStore;

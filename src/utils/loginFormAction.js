@@ -22,12 +22,13 @@ export const loginFormAction = async (prevState, formData) => {
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include', 
             body: JSON.stringify(validatedFields.data),
         });
 
         const result = await response.json();
 
-        // console.log('Login API Response:', result);
+        console.log('Login API Response:', result);
 
         if (result.success) {
             return {
@@ -42,7 +43,7 @@ export const loginFormAction = async (prevState, formData) => {
             };
         }
     } catch (error) {
-        // console.error('Error logging in:', error);
+        console.error('Error logging in:', error);
         return {
             success: false,
             errorMessage: 'An error occurred during login.',

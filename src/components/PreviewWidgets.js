@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
-import { handleFeeds } from "@/utils/handleFeeds";
+import { useSelector, useDispatch } from "react-redux";
 
+import { handleFeeds } from "@/utils/handleFeeds";
+import { updateWidgetState } from "@/lib/features/widgetSlice";
 import MagazineView01 from "./widgetsLayout/MagazineView01";
 import MagazineView02 from "./widgetsLayout/MagazineView02";
 import ListView from "./widgetsLayout/ListView";
@@ -14,6 +16,9 @@ const PreviewWidgets = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [articles, setArticles] = useState([]);
+  const dispatch = useDispatch();
+  const widgetTitle = useSelector((state => state.widget.widgetTitle));
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
@@ -42,6 +47,13 @@ const PreviewWidgets = () => {
         <input
           type="text"
           placeholder="Enter the widget name here"
+          value={widgetTitle}
+          onChange={(e) => dispatch(updateWidgetState(
+            {
+              path: "widgetTitle",
+              value: e.target.value,
+            }
+          ))}
           className="border border-gray-300 rounded-lg px-4 py-2 w-3/4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div className="flex items-center w-1/4 justify-between">

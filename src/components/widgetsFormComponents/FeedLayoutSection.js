@@ -7,7 +7,9 @@ import {
   LayoutGrid,
   List,
 } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
 
+import { updateWidgetState } from "@/lib/features/widgetSlice";
 import MagazineView01 from "../../../public/magazine-view-1.png";
 import MagazineView02 from "../../../public/magazine-view-2.png";
 import MatrixCardView01 from "../../../public/matrix-card-view-1.png";
@@ -19,9 +21,9 @@ import CarouselView02 from "../../../public/carousel-2.png";
 import ListView from "../../../public/list-view.png";
 
 const FeedLayoutSection = () => {
+  const dispatch = useDispatch();
+  const widgetLayoutState = useSelector((state) => state.widget.widgetLayout);
   const [view, setView] = useState("MagazineView");
-  const [layout, setLayout] = useState("MagazineView01");
-
   const viewExamples = {
     MagazineView: [MagazineView01, MagazineView02],
     ListView: [ListView],
@@ -29,20 +31,34 @@ const FeedLayoutSection = () => {
     MatrixGridView: [MatrixGridView01, MatrixGridView02],
     CarouselView: [CarouselView01, CarouselView02],
   };
-  
+
   const renderViewLayouts = (viewLayouts) => {
-    if (!viewExamples[viewLayouts].includes(layout)) {
-      setLayout(viewExamples[viewLayouts][0])
+    if (!viewExamples[viewLayouts].includes(widgetLayoutState)) {
+      dispatch(
+        updateWidgetState({
+          path: "widgetLayout",
+          value: viewExamples[viewLayouts][0],
+        })
+      );
     }
     return viewExamples[viewLayouts].map((viewLayout, index) => (
-      <Image 
-        onClick={()=>setLayout(viewLayout)}
-        className={layout == viewLayout ? "border-2 border-solid border-blue-800" : "border-1 border-white"}
-        key={index} 
-        src={viewLayout} 
-        width={350} 
-        height={600} 
-        alt={viewLayout} />
+      <Image
+        onClick={() =>
+          dispatch(
+            updateWidgetState({ path: "widgetLayout", value: viewLayout })
+          )
+        }
+        className={
+          widgetLayoutState == viewLayout
+            ? "border-2 border-solid border-blue-800"
+            : "border-1 border-white"
+        }
+        key={index}
+        src={viewLayout}
+        width={350}
+        height={600}
+        alt={viewLayout}
+      />
     ));
   };
   return (

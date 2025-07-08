@@ -1,19 +1,27 @@
 'use client'
 
-import { loginFormAction } from '@/utils/loginFormAction'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useState, useActionState, useEffect } from 'react'
+import { useDispatch } from 'react-redux'
+
 import {route} from '@/constants/routes'
+import { loginFormAction } from '@/utils/loginFormAction'
+import { setUser } from '@/lib/features/userSlice'
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false)
   const router = useRouter();
   const [state, action, isPending] = useActionState(loginFormAction, "");
+  const dispatch = useDispatch();
   
   useEffect(() => {
+
       if (state?.success) {
-          router.push(route["MY_WIDGETS"]);
+        // Set user data in Redux store
+        dispatch(setUser(state.user));
+        
+        router.push(route["MY_WIDGETS"]);
       }
   }, [state, router])
 

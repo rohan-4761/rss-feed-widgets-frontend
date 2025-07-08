@@ -3,21 +3,25 @@
 import Link from 'next/link';
 import {useRouter} from 'next/navigation';
 import { useState, useActionState, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
-
+import { setUser } from '@/lib/features/userSlice';
 import {signUpFormAction} from '@/utils/signUpFormAction';
 import { route } from '@/constants/routes';
 
 export default function SignupPage() {
+  const dispatch = useDispatch();
   const [state, action, isPending] = useActionState(signUpFormAction, "");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
   useEffect(()=>{
     if(state?.success){
+      dispatch(setUser(state.user));
+      };
       
       router.push(route["MY_WIDGETS"]);
-    }
+    
   }, [state, router])
 
 

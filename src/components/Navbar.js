@@ -2,18 +2,23 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { SquareArrowUpRight } from "lucide-react";
+import { useSelector, useDispatch } from "react-redux";
+
+import UserModal from "./UserModal";
 import { route } from "@/constants/routes";
 import { handleFeeds } from "@/utils/handleFeeds";
-import { SquareArrowUpRight } from "lucide-react";
 
 export default function Navbar() {
   const [search, setSearch] = useState("");
   const [articles, setArticles] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef();
-
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   useEffect(() => {
     const fetchArticles = async () => {
       if (!search.trim()) {
@@ -70,7 +75,10 @@ export default function Navbar() {
         {showDropdown && articles.length > 0 && (
           <div className="absolute top-12 left-0 bg-white border border-gray-200 rounded-md shadow-md z-50 max-h-60 overflow-y-auto">
             {articles.map((article) => (
-              <div key={article.id} className="flex w-full px-4 py-2 hover:bg-gray-100 text-sm text-gray-800">
+              <div
+                key={article.id}
+                className="flex w-full px-4 py-2 hover:bg-gray-100 text-sm text-gray-800"
+              >
                 {article.title.length > 70
                   ? article.title.slice(0, 70) + "..."
                   : article.title}
@@ -89,12 +97,26 @@ export default function Navbar() {
         )}
       </div>
 
-      {/* Right-aligned Login Button */}
-      <Link href={route["LOGIN"]} className="w-1/2 flex flex-row-reverse">
-        <button className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-          Login
-        </button>
-      </Link>
+      {!user.isLoggedIn ? (
+        <Link href={route["LOGIN"]} className="w-1/2 flex flex-row-reverse">
+          <button className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
+            Login
+          </button>
+        </Link>
+      ) : (
+        <>
+          <button
+            className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition"
+            onClick={() => setIsModalOpen(true)}
+          >
+            {user?.user?.user_name[0] || "Guest"}
+          </button>
+          <UserModal
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+          />
+        </>
+      )}
     </nav>
   );
 }

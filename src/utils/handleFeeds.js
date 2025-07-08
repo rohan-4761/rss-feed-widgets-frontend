@@ -1,5 +1,11 @@
+import { getCookie } from "@/utils/getCookie";
+
+
 export const handleFeeds = async ({ search, source, topic } = {}) => {
   try {
+
+    const token = getCookie("token");
+
     const params = new URLSearchParams();
 
     if (search) params.append("search", search);
@@ -18,8 +24,8 @@ export const handleFeeds = async ({ search, source, topic } = {}) => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
-      credentials: "include", // Include cookies in the request
     });
 
     const contentType = response.headers.get("content-type");

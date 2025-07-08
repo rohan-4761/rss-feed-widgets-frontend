@@ -3,7 +3,7 @@
 import { useState } from "react";
 import {Provider} from "react-redux";
 
-import  widgetStore from "@/lib/store";
+import  {widgetStore} from "@/lib/store";
 import VideoModal from "@/components/VideoModal";
 import CreateWidgetForm from "@/components/CreateWidgetForm";
 import {

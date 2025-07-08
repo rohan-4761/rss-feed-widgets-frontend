@@ -3,13 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "set NODE_EXTRA_CA_CERTS=C:/Users/USER/AppData/Local/mkcert/rootCA.pem && next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
     "@reduxjs/toolkit": "^2.8.2",
+    "jose": "^6.0.11",
     "lodash": "^4.17.21",
     "lucide-react": "^0.523.0",
     "next": "15.3.4",
@@ -24,6 +25,7 @@
     "@tailwindcss/postcss": "^4",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
+    "local-ssl-proxy": "^2.0.5",
     "tailwindcss": "^4"
   }
 }

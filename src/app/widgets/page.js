@@ -3,6 +3,8 @@
 import { Pencil, Trash } from 'lucide-react'
 import Link from 'next/link'
 
+import { route } from '@/constants/routes'
+
 const Widget = () => {
   const widgets = [
     {
@@ -21,9 +23,9 @@ const Widget = () => {
 
       {/* Action Buttons */}
       <div className="flex justify-center space-x-4 mb-6">
-        <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
-          Create New widget
-        </button>
+        <Link href={route['CREATE_WIDGETS']} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          Create New Widget
+        </Link>
         <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
           Learn More
         </button>

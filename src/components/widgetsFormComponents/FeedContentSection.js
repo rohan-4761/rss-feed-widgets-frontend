@@ -89,6 +89,7 @@ const FeedContentSection = () => {
                 })
               )
             }
+            options={["Month, DD YYYY", "DD-MM-YYYY"]}
           />
         )}
 

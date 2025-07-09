@@ -1,29 +1,49 @@
-'use client';
+"use client";
+import { useEffect, useState } from "react";
+import { Pencil, Trash } from "lucide-react";
+import Link from "next/link";
 
-import { Pencil, Trash } from 'lucide-react'
-import Link from 'next/link'
-
-import { route } from '@/constants/routes'
+import { route } from "@/constants/routes";
+import { getWidgets } from "@/utils/handleWidgets";
 
 const Widget = () => {
-  const widgets = [
-    {
-      name: 'Widget 01',
-      feedUrl: 'http://rss.feedspot.com/u/3e1bbc74b892525ffed8d02f0157a88a/rss',
-    },
-    {
-      name: 'Widget 02',
-      feedUrl: 'http://rss.feedspot.com/u/3e1bbc74b892525ffed8d02f0157a88a/rss',
-    },
-  ]
+  const [widgets, setWidgets] = useState([]);
+  const [method, setMethod] = useState("GET");
+  const [loading, setLoading] = useState(false);
+  useEffect(() => {
+    const fetchWidgets = async () => {
+      try {
+        const res = await getWidgets();
+        if (res.success) {
+          const widgets = res.widgets.map((widget) => ({
+            ...widget,
+            widget_data: JSON.parse(widget.widget_data),
+          }));
+          setWidgets(res.widgets);
+          console.log("Fetched widgets:", res.widgets[0].widget_data);
+        } else {
+          console.error("Failed to fetch widgets:", res.message);
+        }
+      } catch (error) {
+        console.error("Error fetching widgets:", error);
+      }
+    };
+    setLoading(true);
+    fetchWidgets();
+    setLoading(false);
+  }, [widgets, method]);
+
   return (
-<div className="px-6 py-10">
+    <div className="px-6 py-10">
       {/* Title */}
       <h1 className="text-3xl font-bold text-center mb-6">My Widgets</h1>
 
       {/* Action Buttons */}
       <div className="flex justify-center space-x-4 mb-6">
-        <Link href={route['CREATE_WIDGETS']} className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+        <Link
+          href={route["CREATE_WIDGETS"]}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
           Create New Widget
         </Link>
         <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
@@ -42,19 +62,22 @@ const Widget = () => {
             </tr>
           </thead>
           <tbody>
-            {widgets.map((widget, index) => (
-              <tr key={index} className="border-t hover:bg-gray-50">
+            {widgets.map((widget) => (
+              <tr key={widget.id} className="border-t hover:bg-gray-50">
                 <td className="px-4 py-2 border-r">
-                  {widget.name}
-                  <Pencil size={16} className="inline-block ml-2 text-blue-600 cursor-pointer" />
+                  {widget.widget_data.name}
+                  <Pencil
+                    size={16}
+                    className="inline-block ml-2 text-blue-600 cursor-pointer"
+                  />
                 </td>
                 <td className="px-4 py-2 border-r">
                   <Link
-                    href={widget.feedUrl}
+                    href={"/widget/create"}
                     className="text-blue-600 hover:underline break-words"
                     target="_blank"
                   >
-                    {widget.feedUrl}
+                    {widget.widget_data.topic}
                   </Link>
                 </td>
                 <td className="px-4 py-2 space-x-2">
@@ -73,7 +96,8 @@ const Widget = () => {
           </tbody>
         </table>
       </div>
-    </div>  )
-}
+    </div>
+  );
+};
 
-export default Widget
+export default Widget;

@@ -2,6 +2,8 @@
 
 export const saveToLocalStorage = (key, value) => {
   try {
+    if (typeof window === "undefined") return undefined; // SSR safety
+
     const serializedValue = JSON.stringify(value);
     localStorage.setItem(key, serializedValue);
   } catch (error) {
@@ -9,16 +11,14 @@ export const saveToLocalStorage = (key, value) => {
   }
 };  
 
-
-export const getFromLocalStorage = (key) => {
+export const loadFromLocalStorage = (key) => {
   try {
-    const serializedValue = localStorage.getItem(key);
-    if (serializedValue === null) {
-      return undefined;
-    }
-    return JSON.parse(serializedValue);
-  } catch (error) {
-    console.error("Error getting from localStorage:", error);
+    if (typeof window === "undefined") return undefined; // SSR safety
+    const serializedState = localStorage.getItem(key);
+    if (serializedState === null) return undefined;
+    return JSON.parse(serializedState);
+  } catch (err) {
+    console.warn("Load localStorage error:", err);
     return undefined;
   }
 };

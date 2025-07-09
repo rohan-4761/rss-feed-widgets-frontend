@@ -26,6 +26,7 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
       spaceBetweenItems,
     },
     feedTitle: {
+      mainTitle,
       feedTitleFontSize,
       feedTitleBold,
       feedTitleBgColor,
@@ -145,7 +146,7 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
             color: feedTitleFontColor,
           }}
         >
-          {widgetTitle}
+          {mainTitle ?? widgetTitle}
         </h2>
         <div className="flex items-center space-x-2">
           <button
@@ -229,7 +230,7 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
       </div>
 
       {/* Progress Indicators */}
-      <div className="flex justify-center py-4 space-x-2">
+      {/* <div className="flex justify-center py-4 space-x-2">
         {feeds.map((_, index) => (
           <button
             key={index}
@@ -244,7 +245,7 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
             }}
           />
         ))}
-      </div>
+      </div> */}
     </div>
   );
 };

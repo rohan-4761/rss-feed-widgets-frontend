@@ -3,7 +3,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import widgetReducer from "@/lib/features/widgetSlice";
 import userReducer from "@/lib/features/userSlice";
-import { getFromLocalStorage } from "@/utils/localStorage";
+import { loadFromLocalStorage } from "@/utils/localStorage";
+import { persistWidgetMiddleware } from "./middleware/persistWidgets";
+
+const preloadedWidgetState = loadFromLocalStorage("widget") 
 
 let preloadedUserState = {
   user: {
@@ -15,7 +18,7 @@ let preloadedUserState = {
 };
 
 if (typeof window !== "undefined") {
-  const userData = getFromLocalStorage("user");
+  const userData = loadFromLocalStorage("user");
   if (userData) {
     preloadedUserState = {
       user: userData,
@@ -29,6 +32,11 @@ const widgetStore = configureStore({
   reducer: {
     widget: widgetReducer,
   },
+  preloadedState: {
+    widget: preloadedWidgetState || undefined,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(persistWidgetMiddleware),
 });
 
 const userStore = configureStore({
@@ -39,5 +47,10 @@ const userStore = configureStore({
     user: preloadedUserState,
   },
 });
+
+// widgetStore.subscribe(() => {
+//   const state = widgetStore.getState();
+//   saveToLocalStorage("widget", state.widget);
+// });
 
 export  {widgetStore, userStore};

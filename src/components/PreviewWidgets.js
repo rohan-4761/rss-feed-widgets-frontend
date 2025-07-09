@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 import { handleFeeds } from "@/utils/handleFeeds";
-import { updateWidgetState } from "@/lib/features/widgetSlice";
+import { updateWidgetState, resetWidget } from "@/lib/features/widgetSlice";
 import MagazineView01 from "./widgetsLayout/MagazineView01";
 import MagazineView02 from "./widgetsLayout/MagazineView02";
 import ListView from "./widgetsLayout/ListView";
@@ -12,20 +12,21 @@ import MatrixGridView01 from "./widgetsLayout/MatrixGridView01";
 import MatrixGridView02 from "./widgetsLayout/MatrixGridView02";
 import CarouselView01 from "./widgetsLayout/CarouselView01";
 import CarouselView02 from "./widgetsLayout/CarouselView02";
+
 const PreviewWidgets = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [articles, setArticles] = useState([]);
   const dispatch = useDispatch();
-  const widgetTitle = useSelector((state => state.widget.widgetTitle));
+  const widgetTitle = useSelector((state) => state.widget.widgetTitle);
+  const topic = useSelector((state) => state.widget.topic);
 
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
         setError(null);
-
-        const articlesData = await handleFeeds();
+        const articlesData = await handleFeeds({ topic: topic ?? "" });
         if (!articlesData || articlesData.length === 0) {
           throw new Error("No articles found");
         }
@@ -38,9 +39,8 @@ const PreviewWidgets = () => {
         setLoading(false);
       }
     };
-    setInterval(fetchArticles, 10000); // Refresh every 60 seconds
-    return () => clearInterval(fetchArticles); // Cleanup on unmount
-  }, []);
+    fetchArticles();
+  }, [topic]);
   return (
     <section className="bg-white p-6 shadow rounded-lg space-y-6 mt-6">
       <div className="flex items-center justify-between">
@@ -48,27 +48,34 @@ const PreviewWidgets = () => {
           type="text"
           placeholder="Enter the widget name here"
           value={widgetTitle}
-          onChange={(e) => dispatch(updateWidgetState(
-            {
-              path: "widgetTitle",
-              value: e.target.value,
-            }
-          ))}
+          onChange={(e) =>
+            dispatch(
+              updateWidgetState({
+                path: "widgetTitle",
+                value: e.target.value,
+              })
+            )
+          }
           className="border border-gray-300 rounded-lg px-4 py-2 w-3/4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div className="flex items-center w-1/4 justify-between">
           <button className="bg-blue-500 text-sm text-white px-4 py-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors">
             Save
           </button>
-          <button className="bg-gray-200 text-sm text-red-600 px-4 py-2 rounded-lg ml-2 hover:bg-red-700 hover:text-white transition-colors">
+          <button
+            className="bg-gray-200 text-sm text-red-600 px-4 py-2 rounded-lg ml-2 hover:bg-red-700 hover:text-white transition-colors"
+            onClick={() => dispatch(resetWidget())}
+          >
             Reset
           </button>
         </div>
       </div>
       {loading || error ? (
-        <div className="text-center text-gray-500">{error?? "Loading Preview..."}</div>
+        <div className="text-center text-gray-500">
+          {error ?? "Loading Preview..."}
+        </div>
       ) : (
-        <CarouselView02 feeds = {articles}/>
+        <CarouselView02 feeds={articles} />
       )}
     </section>
   );

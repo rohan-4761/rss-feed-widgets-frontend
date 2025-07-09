@@ -8,9 +8,9 @@ export const handleFeeds = async ({ search, source, topic } = {}) => {
 
     const params = new URLSearchParams();
 
-    if (search) params.append("search", search);
-    if (source) params.append("source", source);
-    if (topic) params.append("topic", topic);
+    if (search && search.length >=1 ) params.append("search", search);
+    if (source && source.length >=1 ) params.append("source", source);
+    if (topic && topic.length >=1 ) params.append("topic", topic);
 
     // Only include query string if there are params
     const queryString = params.toString();

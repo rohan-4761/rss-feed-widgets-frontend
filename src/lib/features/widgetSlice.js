@@ -1,8 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
 import _set from "lodash/set";
+import { loadFromLocalStorage } from "@/utils/localStorage";
 
-const initialState = {
-  feedspotFolder: "Homepage",
+const storedWidgetState = loadFromLocalStorage("widget");
+
+const defaultWidgetState =  {
+  topic: "",
   feedURL: "",
   widgetLayout: "MagazineView01",
   widgetTitle: "Widget Title",
@@ -54,6 +57,8 @@ const initialState = {
   },
 };
 
+const initialState = storedWidgetState || defaultWidgetState
+
 export const widgetSlice = createSlice({
   name: "widget",
   initialState,
@@ -64,9 +69,13 @@ export const widgetSlice = createSlice({
       // console.log("Updating widget state at path:", path, "with value:", value);
       _set(state, path, value);
     },
+        resetWidget: () => {
+      return defaultWidgetState;
+    },
+
   },
 });
 
-export const { updateWidgetState } = widgetSlice.actions;
+export const { updateWidgetState, resetWidget } = widgetSlice.actions;
 export const selectWidget = (state) => state.widget;
 export default widgetSlice.reducer;

@@ -1,11 +1,13 @@
 import { ExternalLink } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
+
 import { updateWidgetState } from "@/lib/features/widgetSlice";
+import { topics } from "@/constants/metadata";
 
 const RSSFeedURLSection = () => {
   const dispatch = useDispatch();
   const rssFeedUrl = useSelector((state) => state.widget.feedURL);
-  const feedspotFolder = useSelector((state) => state.widget.feedspotFolder);
+  const topic = useSelector((state) => state.widget.topic);
 
   return (
     <section className="bg-white p-6 shadow rounded-lg mt-6">
@@ -40,19 +42,20 @@ const RSSFeedURLSection = () => {
           OR Select Feedspot Folder
         </label>
         <select
-          value={feedspotFolder}
+          value={topic}
           onChange={(e) =>
             dispatch(
               updateWidgetState({
-                path: "feedspotFolder",
+                path: "topic",
                 value: e.target.value,
               })
             )
           }
           className="w-full border p-2 rounded"
         >
-          <option value="">Select folder</option>
-          <option value="Homepage">Homepage</option>
+          {  topics.map((topic) => (
+            <option key={topic} value={topic}> {topic}</option>
+          ))}
         </select>
       </div>
     </section>

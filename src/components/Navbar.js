@@ -4,21 +4,30 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { SquareArrowUpRight } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
+import { useRouter } from "next/navigation";
 
 import UserModal from "./UserModal";
 import { route } from "@/constants/routes";
 import { handleFeeds } from "@/utils/handleFeeds";
 
 export default function Navbar() {
+  const [hasMounted, setHasMounted] = useState(false);
+  
+
+
   const [search, setSearch] = useState("");
   const [articles, setArticles] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+
   const [showDropdown, setShowDropdown] = useState(false);
   const dropdownRef = useRef();
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
+  const router = useRouter();
+
+  
   useEffect(() => {
     const fetchArticles = async () => {
       if (!search.trim()) {
@@ -45,7 +54,7 @@ export default function Navbar() {
 
     return () => clearTimeout(timeoutId);
   }, [search]);
-
+  
   // Hide dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(e) {
@@ -57,7 +66,14 @@ export default function Navbar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
-
+  useEffect(() => {
+    // Ensure the component has mounted before setting state
+    setHasMounted(true);
+  }, []);
+  // If the component has not mounted, return null to avoid rendering
+  if (!hasMounted) {
+    return null;
+  }
   return (
     <nav className="bg-white shadow-sm px-6 py-3 flex items-center justify-between z-40 fixed top-0 w-full">
       <div className="flex-1 w-10/12 mx-auto relative" ref={dropdownRef}>
@@ -98,11 +114,12 @@ export default function Navbar() {
       </div>
 
       {!user.isLoggedIn ? (
-        <Link href={route["LOGIN"]} className="w-1/2 flex flex-row-reverse">
-          <button className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-            Login
-          </button>
-        </Link>
+        <button
+          onClick={() => router.push(route["LOGIN"])}
+          className="w-1/2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+        >
+          Login
+        </button>
       ) : (
         <>
           <button

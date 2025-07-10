@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
 import {
   ChevronDown,
   Filter,
@@ -11,9 +10,10 @@ import {
   LayoutGrid,
   House,
 } from "lucide-react";
+import { useSelector } from "react-redux";
 
 import GridViewList from "@/components/articleComponents/GridViewList";
-
+import UserModal from "@/components/UserModal";
 import CompactList from "@/components/articleComponents/CompactList";
 import CardViewList from "@/components/articleComponents/CardViewList";
 import { sources, topics } from "@/constants/metadata";
@@ -30,6 +30,8 @@ const Home = () => {
   const [articles, setArticles] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const user = useSelector((state) => state.user);
 
   const filterOptions = {
     sources,
@@ -220,11 +222,27 @@ const Home = () => {
         </div>
 
         {/* Right-aligned Login Button */}
-        <Link href="/login" className="w-1/2 flex flex-row-reverse">
-          <button className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition">
-            Login
-          </button>
-        </Link>
+        {!user.isLoggedIn ? (
+                <button
+                  onClick={() => router.push(route["LOGIN"])}
+                  className="w-1/2 bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition"
+                >
+                  Login
+                </button>
+              ) : (
+                <>
+                  <button
+                    className="mr-20 bg-blue-500 text-white px-4 py-2 rounded-full hover:bg-blue-600 transition"
+                    onClick={() => setIsModalOpen(true)}
+                  >
+                    {user?.user?.user_name[0] || "Guest"}
+                  </button>
+                  <UserModal
+                    isOpen={isModalOpen}
+                    onClose={() => setIsModalOpen(false)}
+                  />
+                </>
+              )}
       </nav>
 
       <div className="max-w-4xl mx-auto p-4 bg-white mt-20">

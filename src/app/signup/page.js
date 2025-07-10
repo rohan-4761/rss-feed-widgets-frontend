@@ -18,9 +18,8 @@ export default function SignupPage() {
   useEffect(()=>{
     if(state?.success){
       dispatch(setUser(state.user));
-      };
-      
       router.push(route["MY_WIDGETS"]);
+      };
     
   }, [state, router])
 

@@ -2,9 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import _set from "lodash/set";
 import { loadFromLocalStorage } from "@/utils/localStorage";
 
-const storedWidgetState = loadFromLocalStorage("widget");
-
-const defaultWidgetState =  {
+const defaultWidgetState = {
   topic: "",
   feedURL: "",
   widgetLayout: "MagazineView01",
@@ -57,7 +55,7 @@ const defaultWidgetState =  {
   },
 };
 
-const initialState = storedWidgetState || defaultWidgetState
+const initialState = defaultWidgetState;
 
 export const widgetSlice = createSlice({
   name: "widget",
@@ -69,13 +67,24 @@ export const widgetSlice = createSlice({
       // console.log("Updating widget state at path:", path, "with value:", value);
       _set(state, path, value);
     },
-        resetWidget: () => {
+    resetWidget: () => {
       return defaultWidgetState;
     },
-
+    setFullWidget: (state, action) => {
+      const payload = action.payload;
+      if (typeof payload !== "object" || payload === null) {
+        console.error(
+          "❌ setFullWidget received invalid payload:",
+          payload
+        );
+        return state;
+      }
+      return payload;
+    },
   },
 });
 
-export const { updateWidgetState, resetWidget } = widgetSlice.actions;
+export const { updateWidgetState, resetWidget, setFullWidget } =
+  widgetSlice.actions;
 export const selectWidget = (state) => state.widget;
 export default widgetSlice.reducer;

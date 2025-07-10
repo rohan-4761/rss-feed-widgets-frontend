@@ -1,8 +1,11 @@
 import { Geist, Geist_Mono } from "next/font/google";
 
 import Sidebar from "@/components/Sidebar";
-import UserProvider from "@/lib/providers/userProvider";
+import UserProvider from "@/lib/providers/UserProvider";
+import { ToastContainer } from 'react-toastify';
+
 import "./globals.css";
+import 'react-toastify/dist/ReactToastify.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +34,15 @@ export default function RootLayout({ children }) {
           <div className="ml-16 mt-16">{children}</div>
         </div>
         </UserProvider>
+        <ToastContainer 
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          pauseOnHover
+          draggable
+        />
       </body>
     </html>
   );

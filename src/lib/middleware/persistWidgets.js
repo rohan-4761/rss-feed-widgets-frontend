@@ -1,6 +1,5 @@
 "use client";
 
-import { updateWidgetState } from "../features/widgetSlice";
 import { saveToLocalStorage } from "@/utils/localStorage";
 
 export const persistWidgetMiddleware = (storeAPI) => (next) => (action) => {

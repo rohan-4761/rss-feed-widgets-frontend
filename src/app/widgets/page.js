@@ -2,27 +2,25 @@
 import { useEffect, useState } from "react";
 import { Pencil, Trash } from "lucide-react";
 import Link from "next/link";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 import { route } from "@/constants/routes";
-import { getWidgets } from "@/utils/handleWidgets";
+import { getWidgets, deleteWidget } from "@/utils/handleWidgets";
 
 const Widget = () => {
   const [widgets, setWidgets] = useState([]);
   const [method, setMethod] = useState("GET");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
   useEffect(() => {
     const fetchWidgets = async () => {
       try {
         const res = await getWidgets();
         if (res.success) {
-          const widgets = res.widgets.map((widget) => ({
-            ...widget,
-            widget_data: JSON.parse(widget.widget_data),
-          }));
           setWidgets(res.widgets);
-          console.log("Fetched widgets:", res.widgets[0].widget_data);
         } else {
-          console.error("Failed to fetch widgets:", res.message);
+          toast.error("Failed to fetch widgets:", res.message);
         }
       } catch (error) {
         console.error("Error fetching widgets:", error);
@@ -31,7 +29,26 @@ const Widget = () => {
     setLoading(true);
     fetchWidgets();
     setLoading(false);
-  }, [widgets, method]);
+  }, [method]);
+
+  const handleDelete = async (widgetId) => {
+    try {
+      setMethod("DELETE");
+      const res = await deleteWidget(widgetId);
+      console.log("Delete response:", res);
+      if (res.success) {
+        toast.success(res.message);
+      } else {
+        toast.error("Failed to delete widget: " + res.message);
+      }
+    } catch (error) {
+      console.error("Error deleting widget:", error);
+      toast.error("Error deleting widget: " + error.message);
+    } finally {
+      setMethod("GET");
+    }
+  };
+
 
   return (
     <div className="px-6 py-10">
@@ -81,13 +98,19 @@ const Widget = () => {
                   </Link>
                 </td>
                 <td className="px-4 py-2 space-x-2">
-                  <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
+                  <button
+                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
+                    onClick={() => handleDelete(widget.id)}
+                  >
                     Delete
                   </button>
                   <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
                     Embed Code
                   </button>
-                  <button className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition">
+                  <button
+                    className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
+                    onClick={() => router.push(`${route["EDIT_WIDGET"]}/${widget.id}`)}
+                  >
                     Edit Widget
                   </button>
                 </td>

@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { usePathname } from "next/navigation";
+import { toast } from "react-toastify";
+import { useRouter } from "next/navigation";
 
 import { handleFeeds } from "@/utils/handleFeeds";
 import { updateWidgetState, resetWidget } from "@/lib/features/widgetSlice";
@@ -12,6 +15,9 @@ import MatrixGridView01 from "./widgetsLayout/MatrixGridView01";
 import MatrixGridView02 from "./widgetsLayout/MatrixGridView02";
 import CarouselView01 from "./widgetsLayout/CarouselView01";
 import CarouselView02 from "./widgetsLayout/CarouselView02";
+import { route } from "@/constants/routes";
+import { saveEditedWidgets, saveNewWidgets } from "@/utils/handleWidgets";
+import { removeWidgetsFromLocalStorage } from "@/utils/localStorage";
 
 const PreviewWidgets = () => {
   const [loading, setLoading] = useState(false);
@@ -20,6 +26,38 @@ const PreviewWidgets = () => {
   const dispatch = useDispatch();
   const widgetTitle = useSelector((state) => state.widget.widgetTitle);
   const topic = useSelector((state) => state.widget.topic);
+  const pathname = usePathname();
+  const router = useRouter();
+  const handleSave = async () => {
+    try {
+      const widget_data = localStorage.getItem("widget");
+      if (pathname.startsWith(route["EDIT_WIDGET"])) {
+        const segments = pathname.split("/");
+        const widget_id = segments[segments.length - 1];
+        const res = await saveEditedWidgets(widget_id, widget_data);
+        if (res.success) {
+          toast.success(res.message);
+          removeWidgetsFromLocalStorage();
+          dispatch(resetWidget());
+          router.push(route["MY_WIDGETS"]);
+        } else {
+          toast.error(res.message);
+        }
+      } else if (pathname.startsWith(route["CREATE_WIDGETS"])) {
+        const res = await saveNewWidgets(widget_data);
+        if (res.success) {
+          toast.success(res.message);
+          removeWidgetsFromLocalStorage();
+          dispatch(resetWidget());
+          router.push(route["MY_WIDGETS"]);
+        } else {
+          toast.error(res.message);
+        }
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
 
   useEffect(() => {
     const fetchArticles = async () => {
@@ -59,7 +97,10 @@ const PreviewWidgets = () => {
           className="border border-gray-300 rounded-lg px-4 py-2 w-3/4 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
         <div className="flex items-center w-1/4 justify-between">
-          <button className="bg-blue-500 text-sm text-white px-4 py-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors">
+          <button
+            className="bg-blue-500 text-sm text-white px-4 py-2 rounded-lg ml-4 hover:bg-blue-700 transition-colors"
+            onClick={() => handleSave()}
+          >
             Save
           </button>
           <button

@@ -15,7 +15,7 @@ const MagazineView02 = ({ feeds }) => {
       textAlignment,
       border,
       borderColor,
-      squareCorner,
+      corner,
       padding,
       spaceBetweenItems,
     },
@@ -69,7 +69,7 @@ const MagazineView02 = ({ feeds }) => {
           fontFamily: fontStyle,
           backgroundColor: contentbgColor,
           border: border ? `1px solid ${borderColor}` : 'none',
-          borderRadius: squareCorner ? '0' : '8px',
+          borderRadius: corner == "Square"? '0' : '8px',
           padding: `${padding}px`,
         }}
       >
@@ -87,7 +87,7 @@ const MagazineView02 = ({ feeds }) => {
         fontFamily: fontStyle,
         backgroundColor: contentbgColor,
         border: border ? `1px solid ${borderColor}` : 'none',
-        borderRadius: squareCorner ? '0' : '8px',
+        borderRadius: corner == "Square"? '0' : '8px',
         padding: `${padding}px`,
       }}
     >
@@ -113,7 +113,7 @@ const MagazineView02 = ({ feeds }) => {
           style={{
             marginBottom: `${spaceBetweenItems}px`,
             backgroundColor: contentbgColor,
-            borderRadius: squareCorner ? '0' : '16px',
+            borderRadius: corner == "Square"? '0' : '16px',
           }}
         >
           <img
@@ -121,7 +121,7 @@ const MagazineView02 = ({ feeds }) => {
             src={feed.image}
             alt={feed.title}
             style={{
-              borderRadius: squareCorner ? '0' : '8px',
+              borderRadius: corner == "Square"? '0' : '8px',
             }}
           />
           

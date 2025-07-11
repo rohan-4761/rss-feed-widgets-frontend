@@ -15,7 +15,7 @@ const MatrixCardView01 = ({ feeds }) => {
       textAlignment,
       border,
       borderColor,
-      squareCorner,
+      corner,
       padding,
       spaceBetweenItems,
     },
@@ -66,7 +66,7 @@ const MatrixCardView01 = ({ feeds }) => {
           key={feed.id} 
           className="lg:col-span-2 lg:row-span-2 relative group cursor-pointer overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
           style={{
-            borderRadius: squareCorner ? '0' : '8px',
+            borderRadius: corner == "Square"? '0' : '8px',
             marginBottom: `${spaceBetweenItems}px`,
           }}
         >
@@ -107,7 +107,7 @@ const MatrixCardView01 = ({ feeds }) => {
           key={feed.id} 
           className="relative group cursor-pointer overflow-hidden shadow-md hover:shadow-xl transition-shadow duration-300"
           style={{
-            borderRadius: squareCorner ? '0' : '8px',
+            borderRadius: corner == "Square"? '0' : '8px',
             marginBottom: `${spaceBetweenItems}px`,
           }}
         >
@@ -156,7 +156,7 @@ const MatrixCardView01 = ({ feeds }) => {
         fontFamily: fontStyle,
         backgroundColor: contentbgColor,
         border: border ? `1px solid ${borderColor}` : 'none',
-        borderRadius: squareCorner ? '0' : '8px',
+        borderRadius: corner == "Square"? '0' : '8px',
         padding: `${padding}px`,
       }}
     >

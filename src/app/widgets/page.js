@@ -82,7 +82,7 @@ const Widget = () => {
             {widgets.map((widget) => (
               <tr key={widget.id} className="border-t hover:bg-gray-50">
                 <td className="px-4 py-2 border-r">
-                  {widget.widget_data.name}
+                  {widget.widget_title}
                   <Pencil
                     size={16}
                     className="inline-block ml-2 text-blue-600 cursor-pointer"
@@ -94,7 +94,7 @@ const Widget = () => {
                     className="text-blue-600 hover:underline break-words"
                     target="_blank"
                   >
-                    {widget.widget_data.topic}
+                    {widget.widget_data.feedURL}
                   </Link>
                 </td>
                 <td className="px-4 py-2 space-x-2">

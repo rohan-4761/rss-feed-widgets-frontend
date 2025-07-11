@@ -1,8 +1,8 @@
-import { useSelector } from 'react-redux';
-import { ChevronLeft, ChevronRight, Play, Pause } from 'lucide-react';
-import { useState, useEffect } from 'react';
-
-import formatDate from '../../utils/formatDate'; // Adjust the import path as necessary
+import { ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
+import getTextAlignmentClass from "@/utils/getTextAlignmentClass";
+import formatDate from "../../utils/formatDate";
 
 const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -21,12 +21,11 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
       textAlignment,
       border,
       borderColor,
-      squareCorner,
+      corner,
       padding,
       spaceBetweenItems,
     },
     feedTitle: {
-      mainTitle,
       feedTitleFontSize,
       feedTitleBold,
       feedTitleBgColor,
@@ -36,6 +35,7 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
       contentbgColor,
       showAuthorAndDate,
       dateFormat,
+      displayNoOfPost,
       title: {
         showContentTitle,
         contentTitleBold,
@@ -54,7 +54,7 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
   useEffect(() => {
     if (isAutoPlaying && feeds.length > 0) {
       const timer = setInterval(() => {
-        setCurrentIndex((prevIndex) => 
+        setCurrentIndex((prevIndex) =>
           prevIndex === feeds.length - 1 ? 0 : prevIndex + 1
         );
       }, interval);
@@ -78,101 +78,69 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
     setIsAutoPlaying(!isAutoPlaying);
   };
 
-  // Helper function to format date based on widget settings
-  
-
-  // Helper function to get text alignment class
-  const getTextAlignmentClass = () => {
-    switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
-      case 'AlignCenter':
-        return 'text-center';
-      case 'AlignRight':
-        return 'text-right';
-      default:
-        return 'text-left';
-    }
-  };
-
   if (!feeds || feeds.length === 0) {
     return (
-      <div 
-        className="bg-white rounded-lg shadow-lg overflow-hidden mx-auto p-8 text-center"
+      <div
+        className={`shadow-lg overflow-hidden mx-auto text-center ${getTextAlignmentClass(
+          textAlignment
+        )}`}
         style={{
           width: widthInPixels ? `${width}px` : `${width}%`,
           height: heightInPixels ? `${height}px` : `${height}%`,
           fontFamily: fontStyle,
           backgroundColor: contentbgColor,
-          border: border ? `1px solid ${borderColor}` : 'none',
-          borderRadius: squareCorner ? '0' : '8px',
+          border: border ? `1px solid ${borderColor}` : "none",
+          borderRadius: corner == "Square" ? "0" : "8px",
           padding: `${padding}px`,
         }}
       >
-        <p className="text-gray-500">No content available</p>
+        <p
+          style={{
+            fontSize: `${contentDescFontSize}px`,
+            color: contentDescColor,
+          }}
+        >
+          No content available
+        </p>
       </div>
     );
   }
 
   const currentFeed = feeds[currentIndex];
+  const displayFeeds = feeds.slice(0, displayNoOfPost || feeds.length);
 
   return (
-    <div 
+    <div
       className="shadow-lg overflow-hidden mx-auto"
       style={{
         width: widthInPixels ? `${width}px` : `${width}%`,
         height: heightInPixels ? `${height}px` : `${height}%`,
         fontFamily: fontStyle,
         backgroundColor: contentbgColor,
-        border: border ? `1px solid ${borderColor}` : 'none',
-        borderRadius: squareCorner ? '0' : '8px',
-        padding: `${padding}px`,
+        border: border ? `1px solid ${borderColor}` : "none",
+        borderRadius: corner == "Square" ? "0" : "8px",
       }}
     >
       {/* Header */}
-      <div 
-        className="p-4 flex justify-between items-center"
+      
+      {/* Main Image Display */}
+      <div
+        className="relative bg-gray-100"
         style={{
-          backgroundColor: feedTitleBgColor,
-          color: feedTitleFontColor,
-          marginBottom: `${spaceBetweenItems}px`,
+          borderRadius: corner == "Square" ? "0" : "16px",
+          margin: `0 ${padding}px`,
+          height: heightInPixels ? `${height}px` : `${height}%`,
         }}
       >
-        <h2 
-          className={`${getTextAlignmentClass()}`}
-          style={{
-            fontSize: `${feedTitleFontSize}px`,
-            fontWeight: feedTitleBold ? 'bold' : 'normal',
-            color: feedTitleFontColor,
-          }}
-        >
-          {mainTitle ?? widgetTitle}
-        </h2>
-        <div className="flex items-center space-x-2">
-          <button
-            onClick={toggleAutoPlay}
-            className="p-2 rounded-full hover:bg-black hover:bg-opacity-10 transition-colors"
-            style={{ color: feedTitleFontColor }}
-          >
-            {isAutoPlaying ? <Pause size={20} /> : <Play size={20} />}
-          </button>
-          <span 
-            className="text-sm opacity-80"
-            style={{ color: feedTitleFontColor }}
-          >
-            {currentIndex + 1} / {feeds.length}
-          </span>
-        </div>
-      </div>
-
-      {/* Main Image Display */}
-      <div className="relative aspect-video bg-gray-100">
         <img
           src={currentFeed.image}
           alt={currentFeed.title}
-          className="w-full h-2/3 object-cover"
+          className="w-full h-full object-cover"
+          style={{
+            borderRadius: corner == "Square" ? "0" : "8px",
+          }}
         />
-        
+
         {/* Navigation Arrows */}
         <button
           onClick={goToPrevious}
@@ -180,7 +148,7 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
         >
           <ChevronLeft size={24} />
         </button>
-        
+
         <button
           onClick={goToNext}
           className="absolute right-4 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-50 hover:bg-opacity-75 text-white p-2 rounded-full transition-all duration-200"
@@ -188,39 +156,59 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
           <ChevronRight size={24} />
         </button>
 
-        {/* Article Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-gray-600 to-gray-300 text-white p-4">
+        {/* Overlay */}
+        <div
+          className={`absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black to-transparent text-white ${getTextAlignmentClass(
+            textAlignment
+          )}`}
+          style={{
+            padding: `${padding}px`,
+            // bottom: '45px',
+            borderRadius: corner == "Square" ? "0" : "0 0 8px 8px",
+          }}
+        >
           {showContentTitle && (
-            <h3 
-              className={`mb-2 line-clamp-2 ${getTextAlignmentClass()}`}
+            <h3
+              className="mb-2 line-clamp-2"
               style={{
                 fontSize: `${contentTitleFontSize}px`,
-                fontWeight: contentTitleBold ? 'bold' : 'normal',
+                fontWeight: contentTitleBold ? "bold" : "normal",
                 color: contentTitleColor,
               }}
             >
               {currentFeed.title}
             </h3>
           )}
-          
+
           {showAuthorAndDate && (
-            <div className={`flex items-center justify-between text-sm ${getTextAlignmentClass()}`}>
-              <span style={{ color: contentDescColor, fontSize: `${contentDescFontSize}px` }}>
+            <div className="flex items-center justify-between text-sm">
+              <span
+                style={{
+                  fontSize: `${contentDescFontSize}px`,
+                  fontWeight: contentDescBold ? "bold" : "normal",
+                  color: contentDescColor,
+                }}
+              >
                 {currentFeed.author}
               </span>
-              <span style={{ color: contentDescColor, fontSize: `${contentDescFontSize}px` }}>
+              <span
+                style={{
+                  fontSize: `${contentDescFontSize}px`,
+                  fontWeight: contentDescBold ? "bold" : "normal",
+                  color: contentDescColor,
+                }}
+              >
                 {currentFeed.source}
               </span>
             </div>
           )}
-          
+
           {showAuthorAndDate && (
-            <div 
-              className={`text-xs mt-1 ${getTextAlignmentClass()}`}
-              style={{ 
-                color: contentDescColor, 
+            <div
+              className="text-xs mt-1"
+              style={{
                 fontSize: `${contentDescFontSize - 2}px`,
-                fontWeight: contentDescBold ? 'bold' : 'normal',
+                color: contentDescColor,
               }}
             >
               {formatDate(currentFeed.published_at, dateFormat)}
@@ -228,24 +216,6 @@ const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
           )}
         </div>
       </div>
-
-      {/* Progress Indicators */}
-      {/* <div className="flex justify-center py-4 space-x-2">
-        {feeds.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`w-3 h-3 rounded-full transition-all duration-200 ${
-              index === currentIndex
-                ? 'bg-blue-500 scale-110'
-                : 'bg-gray-300 hover:bg-gray-400'
-            }`}
-            style={{
-              backgroundColor: index === currentIndex ? contentTitleColor : '#d1d5db',
-            }}
-          />
-        ))}
-      </div> */}
     </div>
   );
 };

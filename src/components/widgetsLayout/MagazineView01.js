@@ -15,7 +15,7 @@ const MagazineView01 = ({ feeds }) => {
       textAlignment,
       border,
       borderColor,
-      squareCorner,
+      corner,
       padding,
       spaceBetweenItems,
     },
@@ -69,7 +69,7 @@ const MagazineView01 = ({ feeds }) => {
           fontFamily: fontStyle,
           backgroundColor: contentbgColor,
           border: border ? `1px solid ${borderColor}` : 'none',
-          borderRadius: squareCorner ? '0' : '8px',
+          borderRadius: corner == "Square"? '0' : '8px',
           padding: `${padding}px`,
         }}
       >
@@ -87,7 +87,7 @@ const MagazineView01 = ({ feeds }) => {
         fontFamily: fontStyle,
         backgroundColor: contentbgColor,
         border: border ? `1px solid ${borderColor}` : 'none',
-        borderRadius: squareCorner ? '0' : '8px',
+        borderRadius: corner == "Square"? '0' : '8px',
         padding: `${padding}px`,
         overflowY: 'scroll',
       
@@ -114,7 +114,7 @@ const MagazineView01 = ({ feeds }) => {
           className={`flex flex-row items-center justify-between w-full h-full p-4 ${getTextAlignmentClass()}`}
           style={{
             marginBottom: `${spaceBetweenItems}px`,
-            borderRadius: squareCorner ? '0' : '8px',
+            borderRadius: corner == "Square"? '0' : '8px',
           }}
         >
           <img 
@@ -122,7 +122,7 @@ const MagazineView01 = ({ feeds }) => {
             src={feed.image} 
             alt={feed.title}
             style={{
-              borderRadius: squareCorner ? '0' : '8px',
+              borderRadius: corner == "Square"? '0' : '8px',
             }}
           />
           

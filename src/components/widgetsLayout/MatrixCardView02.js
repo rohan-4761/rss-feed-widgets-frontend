@@ -15,7 +15,7 @@ const MatrixCardView02 = ({ feeds }) => {
       textAlignment,
       border,
       borderColor,
-      squareCorner,
+      corner,
       padding,
       spaceBetweenItems,
     },
@@ -68,7 +68,7 @@ const MatrixCardView02 = ({ feeds }) => {
         fontFamily: fontStyle,
         backgroundColor: contentbgColor,
         border: border ? `1px solid ${borderColor}` : 'none',
-        borderRadius: squareCorner ? '0' : '8px',
+        borderRadius: corner == "Square"? '0' : '8px',
       }}
     >
       {/* Header */}
@@ -111,7 +111,7 @@ const MatrixCardView02 = ({ feeds }) => {
               style={{
                 backgroundColor: contentbgColor,
                 border: border ? `1px solid ${borderColor}` : 'none',
-                borderRadius: squareCorner ? '0' : '8px',
+                borderRadius: corner == "Square"? '0' : '8px',
               }}
             >
               <img

@@ -20,21 +20,24 @@ import { saveEditedWidgets, saveNewWidgets } from "@/utils/handleWidgets";
 import { removeWidgetsFromLocalStorage } from "@/utils/localStorage";
 
 const PreviewWidgets = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [articles, setArticles] = useState([]);
   const dispatch = useDispatch();
   const widgetTitle = useSelector((state) => state.widget.widgetTitle);
   const topic = useSelector((state) => state.widget.topic);
+  const widgetLayout = useSelector((state) => state.widget.widgetLayout);
   const pathname = usePathname();
   const router = useRouter();
+
   const handleSave = async () => {
     try {
-      const widget_data = localStorage.getItem("widget");
+      const widget_data = JSON.parse(localStorage.getItem("widget"));
       if (pathname.startsWith(route["EDIT_WIDGET"])) {
         const segments = pathname.split("/");
         const widget_id = segments[segments.length - 1];
         const res = await saveEditedWidgets(widget_id, widget_data);
+        
         if (res.success) {
           toast.success(res.message);
           removeWidgetsFromLocalStorage();
@@ -68,7 +71,6 @@ const PreviewWidgets = () => {
         if (!articlesData || articlesData.length === 0) {
           throw new Error("No articles found");
         }
-        console.log("Fetched articles:", articlesData[0]);
         setArticles(articlesData);
       } catch (err) {
         setError("Error fetching articles: " + err.message);
@@ -77,8 +79,63 @@ const PreviewWidgets = () => {
         setLoading(false);
       }
     };
-    fetchArticles();
+
+    if (topic) {
+      fetchArticles();
+    } else {
+      setLoading(false);
+    }
   }, [topic]);
+
+  useEffect(() => {
+    if (widgetLayout) {
+      setLoading(false);
+    } else {
+      setLoading(true);
+    }
+  }, [widgetLayout]);
+
+  const renderPreview = (previewLayout) => {
+    if (!previewLayout) {
+      return <div>Loading Preview...</div>;
+    }
+    console.log(previewLayout) 
+    console.log("Article: ",articles[0]) 
+    switch (previewLayout) {
+      case "MagazineView01":
+        return <MagazineView01 feeds={articles} />;
+      case "MagazineView02":
+        return <MagazineView02 feeds={articles} />;
+      case "ListView":
+        return <ListView feeds={articles} />;
+      case "MatrixCardView01":
+        return <MatrixCardView01 feeds={articles} />;
+      case "MatrixCardView02":
+        return <MatrixCardView02 feeds={articles} />;
+      case "MatrixGridView01":
+        return <MatrixGridView01 feeds={articles} />;
+      case "MatrixGridView02":
+        return <MatrixGridView02 feeds={articles} />;
+      case "CarouselView01":
+        return <CarouselView01 feeds={articles} />;
+      case "CarouselView02":
+        return <CarouselView02 feeds={articles} />;
+      default:
+        return <div>Error Loading preview.....</div>;
+    }
+  };
+
+  if (loading || error || !widgetLayout) {
+    console.log(widgetLayout)
+    return (
+      <section className="bg-white p-6 shadow rounded-lg space-y-6 mt-6">
+        <div className="text-center text-gray-500">
+          {error ?? "Loading Preview..."}
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section className="bg-white p-6 shadow rounded-lg space-y-6 mt-6">
       <div className="flex items-center justify-between">
@@ -111,13 +168,7 @@ const PreviewWidgets = () => {
           </button>
         </div>
       </div>
-      {loading || error ? (
-        <div className="text-center text-gray-500">
-          {error ?? "Loading Preview..."}
-        </div>
-      ) : (
-        <CarouselView02 feeds={articles} />
-      )}
+      {renderPreview(widgetLayout)}
     </section>
   );
 };

@@ -1,6 +1,8 @@
 import React from "react";
-import { useSelector } from 'react-redux';
-import formatDate from '../../utils/formatDate';
+import { useSelector } from "react-redux";
+import formatDate from "../../utils/formatDate";
+import getTextAlignmentClass from "@/utils/getTextAlignmentClass";
+import truncateText from "@/utils/truncateText";
 
 const ListView = ({ feeds }) => {
   // Get styling properties from widget state
@@ -16,7 +18,7 @@ const ListView = ({ feeds }) => {
       textAlignment,
       border,
       borderColor,
-      squareCorner,
+      corner,
       padding,
       spaceBetweenItems,
     },
@@ -29,6 +31,7 @@ const ListView = ({ feeds }) => {
     feedContent: {
       contentbgColor,
       showAuthorAndDate,
+      displayLink,
       dateFormat,
       displayNoOfPost,
       title: {
@@ -47,37 +50,25 @@ const ListView = ({ feeds }) => {
   } = widgetState;
 
   // Helper function to get text alignment class
-  const getTextAlignmentClass = () => {
-    switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
-      case 'AlignCenter':
-        return 'text-center';
-      case 'AlignRight':
-        return 'text-right';
-      default:
-        return 'text-left';
-    }
-  };
 
   return (
-    <div 
+    <div
       className="overflow-y-auto mx-auto"
       style={{
         width: widthInPixels ? `${width}px` : `${width}%`,
         height: heightInPixels ? `${height}px` : `${height}%`,
         fontFamily: fontStyle,
         backgroundColor: contentbgColor,
-        border: border ? `1px solid ${borderColor}` : 'none',
-        borderRadius: squareCorner ? '0' : '8px',
+        border: border ? `1px solid ${borderColor}` : "none",
+        borderRadius: corner == "Square" ? "0" : "8px",
         padding: `${padding}px`,
       }}
     >
-      <h2 
-        className={`border-b pb-2 ${getTextAlignmentClass()}`}
+      <h2
+        className={`border-b pb-2 ${getTextAlignmentClass(textAlignment)}`}
         style={{
           fontSize: `${feedTitleFontSize}px`,
-          fontWeight: feedTitleBold ? 'bold' : 'normal',
+          fontWeight: feedTitleBold ? "bold" : "normal",
           color: feedTitleFontColor,
           backgroundColor: feedTitleBgColor,
           marginBottom: `${spaceBetweenItems}px`,
@@ -86,52 +77,65 @@ const ListView = ({ feeds }) => {
       >
         {widgetTitle}
       </h2>
-      
+
       {feeds && feeds.length > 0 ? (
         feeds.slice(0, displayNoOfPost).map((feed) => (
           <div
             key={feed.id}
-            className={`flex flex-col items-start justify-start w-full p-4 rounded-lg ${getTextAlignmentClass()}`}
+            className={`flex flex-col items-start justify-start w-full p-4 rounded-lg ${getTextAlignmentClass(
+              textAlignment
+            )}`}
             style={{
               marginBottom: `${spaceBetweenItems}px`,
-              borderRadius: squareCorner ? '0' : '8px',
+              borderRadius: corner == "Square" ? "0" : "8px",
             }}
           >
             {showContentTitle && (
-              <div 
+              <div
                 className="mb-1"
                 style={{
                   fontSize: `${contentTitleFontSize}px`,
-                  fontWeight: contentTitleBold ? 'bold' : 'normal',
+                  fontWeight: contentTitleBold ? "bold" : "normal",
                   color: contentTitleColor,
                 }}
               >
-                {feed.title}
+                {truncateText(feed.title, 50)}
               </div>
             )}
-            
-            {showAuthorAndDate && (
-              <p 
+            {showContentDesc && (
+              <p
                 className="mb-1"
                 style={{
                   fontSize: `${contentDescFontSize}px`,
-                  fontWeight: contentDescBold ? 'bold' : 'normal',
+                  fontWeight: contentDescBold ? "bold" : "normal",
+                  color: contentDescColor,
+                }}
+              >
+                {truncateText(feed.description, 80)}
+              </p>
+            )}
+            {showAuthorAndDate && (
+              <p
+                className="mb-1"
+                style={{
+                  fontSize: `${contentDescFontSize}px`,
+                  fontWeight: contentDescBold ? "bold" : "normal",
                   color: contentDescColor,
                 }}
               >
                 {feed.source} - {feed.author}
               </p>
             )}
-            
+
             {showAuthorAndDate && (
-              <span 
+              <span
                 className="text-sm"
                 style={{
                   fontSize: `${contentDescFontSize - 2}px`,
                   color: contentDescColor,
                 }}
               >
-                By {feed.link} - {formatDate(feed.published_at, dateFormat)}
+                {displayLink? `By ${feed.link} -` : "" } {formatDate(feed.published_at, dateFormat)}
               </span>
             )}
           </div>

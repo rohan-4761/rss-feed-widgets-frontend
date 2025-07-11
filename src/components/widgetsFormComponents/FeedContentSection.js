@@ -39,19 +39,7 @@ const FeedContentSection = () => {
               })
             )
           }
-          text="Display link to original content"
-        />
-        <ToggleButton
-          value={widgetContentState.displayReadMore}
-          onToggle={(value) =>
-            dispatch(
-              updateWidgetState({
-                path: "feedContent.displayReadMore",
-                value: value,
-              })
-            )
-          }
-          text="Display Read more."
+          text="Display Link"
         />
         <ColorPicker
           value={widgetContentState.contentbgColor}

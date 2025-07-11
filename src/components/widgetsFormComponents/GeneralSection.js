@@ -23,13 +23,12 @@ const GeneralSection = () => {
     width,
     heightInPixels,
     height,
-    autoScroll,
     openLinksInNewTab,
     fontStyle,
     textAlignment,
     border,
     borderColor,
-    squareCorner,
+    corner,
     padding,
     spaceBetweenItems,
   } = widgetGeneralState;
@@ -155,19 +154,7 @@ const GeneralSection = () => {
           />
         </div>
 
-        <ToggleButton
-          value={autoScroll}
-          onToggle={(value) =>
-            dispatch(
-              updateWidgetState({
-                path: "general.autoScroll",
-                value,
-              })
-            )
-          }
-          text="Autoscroll"
-        />
-
+        
         <div className="flex justify-between">
           <label className="w-7/10 text-sm">Open Links</label>
           <select
@@ -304,11 +291,11 @@ const GeneralSection = () => {
         )}
 
         <DoubleOption
-          value={squareCorner}
+          value={corner}
           onChange={(value) =>
             dispatch(
               updateWidgetState({
-                path: "general.squareCorner",
+                path: "general.corner",
                 value,
               })
             )
@@ -316,20 +303,6 @@ const GeneralSection = () => {
           options={["Square", "Rounded"]}
           label="Corner"
         />
-
-        <label className="block text-sm font-medium text-gray-700">
-          Custom CSS Link
-        </label>
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            placeholder="Enter Custom CSS URL"
-            className="w-full border border-gray-300 p-2 rounded"
-          />
-          <button className="bg-blue-600 text-white px-4 py-2 rounded">
-            <Link />
-          </button>
-        </div>
 
         <NumberInput
           value={padding}

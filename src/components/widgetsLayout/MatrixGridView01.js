@@ -16,7 +16,7 @@ const MatrixGridView01 = ({ feeds }) => {
       textAlignment,
       border,
       borderColor,
-      squareCorner,
+      corner,
       padding,
       spaceBetweenItems,
     },
@@ -71,7 +71,7 @@ const MatrixGridView01 = ({ feeds }) => {
         fontFamily: fontStyle,
         backgroundColor: contentbgColor,
         border: border ? `1px solid ${borderColor}` : 'none',
-        borderRadius: squareCorner ? '0' : '8px',
+        borderRadius: corner == "Square"? '0' : '8px',
         padding: `${padding}px`,
       }}
     >
@@ -104,7 +104,7 @@ const MatrixGridView01 = ({ feeds }) => {
               key={feed.id} 
               className="relative group"
               style={{
-                borderRadius: squareCorner ? '0' : '8px',
+                borderRadius: corner == "Square"? '0' : '8px',
                 overflow: 'hidden',
               }}
             >
@@ -113,7 +113,7 @@ const MatrixGridView01 = ({ feeds }) => {
                 alt={feed.title}
                 className="w-full h-28 object-cover"
                 style={{
-                  borderRadius: squareCorner ? '0' : '8px',
+                  borderRadius: corner == "Square"? '0' : '8px',
                 }}
               />
               {showContentTitle && (
@@ -121,7 +121,7 @@ const MatrixGridView01 = ({ feeds }) => {
                   className="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-center"
                   style={{
                     padding: `${padding}px`,
-                    borderRadius: squareCorner ? '0' : '8px',
+                    borderRadius: corner == "Square"? '0' : '8px',
                   }}
                 >
                   <div className={getTextAlignmentClass()}>

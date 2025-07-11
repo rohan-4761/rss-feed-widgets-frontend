@@ -1,7 +1,7 @@
-
 import { useSelector, useDispatch } from "react-redux";
-import { updateWidgetState } from "@/lib/features/widgetSlice";
 
+import { updateWidgetState } from "@/lib/features/widgetSlice";
+import { defaultWidgetState } from "@/lib/features/widgetSlice";
 import ToggleButton from "@/components/ui/ToggleButton";
 import NumberInput from "@/components/ui/NumberInput";
 import ColorPicker from "../ui/ColorPicker";
@@ -9,7 +9,27 @@ import ColorPicker from "../ui/ColorPicker";
 const FeedTitleSection = () => {
   const dispatch = useDispatch();
   const widgetTitleState = useSelector((state) => state.widget.feedTitle);
-
+  const { feedTitle } = defaultWidgetState;
+  const handleCustom = (custom) => {
+    dispatch(
+      updateWidgetState({
+        path: "feedTitle.custom",
+        value: custom,
+      })
+    );
+    if (!custom) {
+      for (const key in feedTitle) {
+        if (key != "custom") {
+          dispatch(
+            updateWidgetState({
+              path: `feedTitle.${key}`,
+              value: feedTitle[key],
+            })
+          );
+        }
+      }
+    }
+  };
   return (
     <section className="bg-white p-6 shadow rounded-lg space-y-6 mt-6">
       <h2 className="text-xl font-semibold border-b pb-2 text-blue-800">
@@ -18,14 +38,7 @@ const FeedTitleSection = () => {
       <div className="space-y-4">
         <ToggleButton
           value={widgetTitleState.custom}
-          onToggle={(value) =>
-            dispatch(
-              updateWidgetState({
-                path: "feedTitle.custom",
-                value: value,
-              })
-            )
-          }
+          onToggle={(value) => handleCustom(value)}
           text="Custom"
         />
         {widgetTitleState.custom && (
@@ -42,27 +55,6 @@ const FeedTitleSection = () => {
                     dispatch(
                       updateWidgetState({
                         path: "feedTitle.mainTitle",
-                        value: e.target.value,
-                      })
-                    )
-                  }
-                  placeholder="Example..."
-                  className="w-full border border-gray-300 p-2 rounded"
-                />
-              </div>
-            </div>
-            <div className="flex flex-row">
-              <label className="block text-sm font-medium text-gray-700 w-1/3 mt-2.5">
-                Main Title link
-              </label>
-              <div className="flex items-center gap-2 w-2/3">
-                <input
-                  type="text"
-                  value={widgetTitleState.mainTitleLink}
-                  onChange={(e) =>
-                    dispatch(
-                      updateWidgetState({
-                        path: "feedTitle.mainTitleLink",
                         value: e.target.value,
                       })
                     )
@@ -114,12 +106,14 @@ const FeedTitleSection = () => {
             />
             <ColorPicker
               value={widgetTitleState.feedTitleBgColor}
-              onChange={value =>dispatch(
-                updateWidgetState({
-                  path: "feedTitle.feedTitleBgColor",
-                  value: value,
-                })
-              )}
+              onChange={(value) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "feedTitle.feedTitleBgColor",
+                    value: value,
+                  })
+                )
+              }
               label={"Background Color"}
             />
           </>

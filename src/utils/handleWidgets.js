@@ -12,12 +12,21 @@ const getWidgets = async (widget_id = null) => {
     }
     const queryString = params.toString();
     const getUrl = `${url}${queryString ? `?${queryString}` : ""}`;
-    const response = await fetch(getUrl, {
-      method: "GET",
-      headers: {
+    const requestHeaders = (token) => {
+      if (token === undefined) {
+        return {
+          "Content-Type": "application/json",
+          "X-Embed-Request": "true",
+        };
+      }
+      return {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
-      },
+      };
+    };
+    const response = await fetch(getUrl, {
+      method: "GET",
+      headers: requestHeaders(token),
     });
     const contentType = response.headers.get("content-type");
     if (!contentType || !contentType.includes("application/json")) {

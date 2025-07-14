@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux';
 import formatDate from '../../utils/formatDate';
 
-const MagazineView02 = ({ feeds }) => {
+const MagazineView02 = ({ feeds,widgetStateJSON=null  }) => {
   // Get styling properties from widget state
-  const widgetState = useSelector((state) => state.widget);
+  const widgetState = widgetStateJSON && Object.keys(widgetStateJSON).length > 0 
+  ? widgetStateJSON
+  : useSelector(state => state.widget); 
   const {
     widgetTitle,
     general: {

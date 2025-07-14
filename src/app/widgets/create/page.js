@@ -1,11 +1,10 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Provider, useDispatch } from "react-redux";
-
-import { widgetStore } from "@/lib/store";
+import { useDispatch } from "react-redux";
+import WidgetProvider from "@/lib/providers/WidgetProvider";
 import { setFullWidget } from "@/lib/features/widgetSlice";
-import VideoModal from "@/components/VideoModal";
+import VideoModal from "@/components/modal/VideoModal";
 import CreateWidgetForm from "@/components/CreateWidgetForm";
 import {
   ADD_OR_FOLLOW_BLOG_DEMO,
@@ -35,7 +34,7 @@ const Create = () => {
   if (!isHydrated) return null;
 
   return (
-    <Provider store={widgetStore}>
+    <WidgetProvider>
       <div className="min-h-screen bg-white p-10">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-center mb-2">
@@ -105,7 +104,7 @@ const Create = () => {
           </div>
         </div>
       </div>
-    </Provider>
+    </WidgetProvider>
   );
 };
 

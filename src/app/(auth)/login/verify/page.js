@@ -3,7 +3,7 @@ import React from 'react'
 
 const Verify = () => {
   return (
-    <div className='absolute top-0 w-full'>
+    <div className='w-full'>
         <OTPForm />
     </div>
   )

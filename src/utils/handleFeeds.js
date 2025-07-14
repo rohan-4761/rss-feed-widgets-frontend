@@ -1,16 +1,14 @@
 import { getCookie } from "@/utils/getCookie";
 
-
 export const handleFeeds = async ({ search, source, topic } = {}) => {
   try {
-
     const token = getCookie("token");
 
     const params = new URLSearchParams();
 
-    if (search && search.length >=1 ) params.append("search", search);
-    if (source && source.length >=1 ) params.append("source", source);
-    if (topic && topic.length >=1 ) params.append("topic", topic);
+    if (search && search.length >= 1) params.append("search", search);
+    if (source && source.length >= 1) params.append("source", source);
+    if (topic && topic.length >= 1) params.append("topic", topic);
 
     // Only include query string if there are params
     const queryString = params.toString();
@@ -18,14 +16,22 @@ export const handleFeeds = async ({ search, source, topic } = {}) => {
       queryString ? `?${queryString}` : ""
     }`;
 
-    console.log("Fetching from URL:", url);
+    const requestHeaders = (token) => {
+      if (token === undefined) {
+        return {
+          "Content-Type": "application/json",
+          "X-Embed-Request": "true",
+        };
+      }
+      return {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      };
+    };
 
     const response = await fetch(url, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`,
-      },
+      headers: requestHeaders(token),
     });
 
     const contentType = response.headers.get("content-type");

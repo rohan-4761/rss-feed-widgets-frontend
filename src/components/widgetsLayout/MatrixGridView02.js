@@ -3,8 +3,10 @@ import { useSelector } from "react-redux";
 import formatDate from "../../utils/formatDate";
 import getTextAlignmentClass from "@/utils/getTextAlignmentClass";
 
-const MatrixGridView02 = ({ feeds }) => {
-  const widgetState = useSelector((state) => state.widget);
+const MatrixGridView02 = ({ feeds, widgetStateJSON=null }) => {
+  const widgetState = widgetStateJSON && Object.keys(widgetStateJSON).length > 0 
+  ? widgetStateJSON
+  : useSelector(state => state.widget); 
   const {
     widgetTitle,
     general: {

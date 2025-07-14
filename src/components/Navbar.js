@@ -6,7 +6,7 @@ import { SquareArrowUpRight } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { useRouter } from "next/navigation";
 
-import UserModal from "./UserModal";
+import UserModal from "./modal/UserModal";
 import { route } from "@/constants/routes";
 import { handleFeeds } from "@/utils/handleFeeds";
 

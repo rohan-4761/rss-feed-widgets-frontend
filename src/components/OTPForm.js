@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowLeft, RefreshCw } from 'lucide-react';
 
-export default function OTPForm() {
+export default function OTPForm({email="rohandas4761@gmail.com"}) {
   const [otp, setOtp] = useState(['', '', '', '', '', '']);
   const [isLoading, setIsLoading] = useState(false);
   const [isResending, setIsResending] = useState(false);
@@ -116,10 +116,10 @@ export default function OTPForm() {
             </svg>
           </div>
           
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Phone</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Verify Your Email</h1>
           <p className="text-gray-600">
             Enter the 6-digit code sent to<br />
-            <span className="font-semibold text-gray-900">+91 98765 43210</span>
+            <span className="font-semibold text-gray-900">{email}</span>
           </p>
         </div>
 

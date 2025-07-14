@@ -13,12 +13,13 @@ import {
 import { useSelector } from "react-redux";
 
 import GridViewList from "@/components/articleComponents/GridViewList";
-import UserModal from "@/components/UserModal";
+import UserModal from "@/components/modal/UserModal";
 import CompactList from "@/components/articleComponents/CompactList";
 import CardViewList from "@/components/articleComponents/CardViewList";
 import { sources, topics } from "@/constants/metadata";
 import { handleFeeds } from "@/utils/handleFeeds";
 import timeAgo from "@/utils/timeAgo";
+import Sidebar from "@/components/Sidebar";
 
 const Home = () => {
   const [search, setSearch] = useState("");
@@ -261,7 +262,7 @@ const Home = () => {
           {loading && <span className="ml-2 text-blue-600">Loading...</span>}
           {error && <span className="ml-2 text-red-600">Error: {error}</span>}
         </div>
-
+              <Sidebar />
         {articles.length > 0 ? (
           renderArticles()  
         ) : (

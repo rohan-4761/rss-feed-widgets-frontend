@@ -1,9 +1,11 @@
 import { useSelector } from 'react-redux';
 import formatDate from '../../utils/formatDate';
 
-const MatrixCardView01 = ({ feeds }) => {
+const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
   // Get styling properties from widget state
-  const widgetState = useSelector((state) => state.widget);
+  const widgetState = widgetStateJSON && Object.keys(widgetStateJSON).length > 0 
+  ? widgetStateJSON
+  : useSelector(state => state.widget); 
   const {
     widgetTitle,
     general: {

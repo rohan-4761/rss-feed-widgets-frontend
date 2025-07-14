@@ -4,12 +4,14 @@ import { useSelector } from "react-redux";
 import getTextAlignmentClass from "@/utils/getTextAlignmentClass";
 import formatDate from "../../utils/formatDate";
 
-const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000 }) => {
+const CarouselView02 = ({ feeds, autoPlay = false, interval = 3000, widgetStateJSON=null}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(autoPlay);
 
   // Get styling properties from widget state
-  const widgetState = useSelector((state) => state.widget);
+  const widgetState = widgetStateJSON && Object.keys(widgetStateJSON).length > 0 
+  ? widgetStateJSON
+  : useSelector(state => state.widget); 
   const {
     widgetTitle,
     general: {

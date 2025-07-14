@@ -1,12 +1,12 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { Provider, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { toast } from "react-toastify";
 
+import WidgetProvider from "@/lib/providers/WidgetProvider";
 import { setFullWidget } from "@/lib/features/widgetSlice";
-import { widgetStore } from "@/lib/store";
-import VideoModal from "@/components/VideoModal";
+import VideoModal from "@/components/modal/VideoModal";
 import CreateWidgetForm from "@/components/CreateWidgetForm";
 import {
   ADD_OR_FOLLOW_BLOG_DEMO,
@@ -22,7 +22,7 @@ const Create = ({ params }) => {
   const [showModal, setShowModal] = useState(false);
   const [video, setVideo] = useState(null);
   const dispatch = useDispatch();
-  const [isHydrated, setIsHydrated] = useState(false)
+  const [isHydrated, setIsHydrated] = useState(false);
 
   const watchVideoHandler = (video_source) => {
     setVideo(video_source);
@@ -30,13 +30,12 @@ const Create = ({ params }) => {
   };
 
   useEffect(() => {
-  const storedWidget = loadFromLocalStorage("widget");
-  if (storedWidget) {
-    dispatch(setFullWidget(storedWidget));
-  }
-  setIsHydrated(true)
-}, []);
-
+    const storedWidget = loadFromLocalStorage("widget");
+    if (storedWidget) {
+      dispatch(setFullWidget(storedWidget));
+    }
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     const getWidgetById = async (widgetId) => {
@@ -51,10 +50,7 @@ const Create = ({ params }) => {
           }
           try {
             dispatch(setFullWidget(widgetObject));
-            saveToLocalStorage(
-              "widget",
-              widgetObject
-            );
+            saveToLocalStorage("widget", widgetObject);
             saveToLocalStorage("widget_id", res.widgets[0].id);
             toast.success("Successfully loaded widget data.");
           } catch (error) {
@@ -70,10 +66,10 @@ const Create = ({ params }) => {
     getWidgetById(slug);
   }, [slug]);
 
-  if(!isHydrated) return null;
+  if (!isHydrated) return null;
 
   return (
-    <Provider store={widgetStore}>
+    <WidgetProvider>
       <div className="min-h-screen bg-white p-10">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-3xl font-bold text-center mb-2">
@@ -143,7 +139,7 @@ const Create = ({ params }) => {
           </div>
         </div>
       </div>
-    </Provider>
+    </WidgetProvider>
   );
 };
 

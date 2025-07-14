@@ -3,10 +3,12 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import formatDate from '../../utils/formatDate';
 
-const CarouselView01 = ({ feeds }) => {
+const CarouselView01 = ({ feeds, widgetStateJSON=null }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const widgetState = useSelector((state) => state.widget);
+  const widgetState = widgetStateJSON && Object.keys(widgetStateJSON).length > 0 
+  ? widgetStateJSON
+  : useSelector(state => state.widget); 
   const {
     general: {
       width,

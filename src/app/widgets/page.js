@@ -118,7 +118,7 @@ const Widget = () => {
                       className="text-blue-600 hover:underline break-words"
                       target="_blank"
                     >
-                      {widget.widget_data.feedURL}
+                      {widget.widget_data.rssFeed ??  widget.widget_data.feedURL}
                     </Link>
                   </td>
                   <td className="px-4 py-2 space-x-2">

@@ -1,14 +1,33 @@
 import { getCookie } from "@/utils/getCookie";
 
-export const handleFeeds = async ({ search, source, topic } = {}) => {
+function isValidUrl(url) {
+  try {
+    new URL(url); // Attempt to create a URL object
+    return true;  // If successful, the URL is valid
+  } catch (error) {
+    return false; // If a TypeError is thrown, the URL is invalid
+  }
+}
+
+export const handleFeeds = async ({
+  search,
+  source,
+  topic,
+  limit,
+  rssFeed,
+} = {}) => {
   try {
     const token = getCookie("token");
-
     const params = new URLSearchParams();
 
-    if (search && search.length >= 1) params.append("search", search);
-    if (source && source.length >= 1) params.append("source", source);
-    if (topic && topic.length >= 1) params.append("topic", topic);
+    if (rssFeed && rssFeed.length >= 1 && isValidUrl(rssFeed)) {
+      params.append("rssFeed", rssFeed);
+    } else {
+      if (search && search.length >= 1) params.append("search", search);
+      if (source && source.length >= 1) params.append("source", source);
+      if (topic && topic.length >= 1) params.append("topic", topic);
+    }
+    if (limit && limit.length >= 1) params.append("limit", limit);
 
     // Only include query string if there are params
     const queryString = params.toString();
@@ -49,6 +68,7 @@ export const handleFeeds = async ({ search, source, topic } = {}) => {
     }
     console.log("API Response:", result.data[0]);
     return result.data;
+    
   } catch (error) {
     console.error("Error in handleFeeds:", error);
     throw error;

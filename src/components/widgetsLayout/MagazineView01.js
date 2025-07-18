@@ -61,7 +61,9 @@ const MagazineView01 = ({ feeds, widgetStateJSON=null }) => {
     }
   };
 
-  if (!feeds || feeds.length === 0) {
+  if (!feeds || feeds.length === 0 || !Array.isArray(feeds)) {
+    console.log(feeds);
+    console.log(typeof feeds);
     return (
       <div 
         className="text-gray-500 mx-auto"

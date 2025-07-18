@@ -26,6 +26,7 @@ const PreviewWidgets = () => {
   const dispatch = useDispatch();
   const widgetTitle = useSelector((state) => state.widget.widgetTitle);
   const topic = useSelector((state) => state.widget.topic);
+  const rssFeed = useSelector((state) => state.widget.rssFeed);
   const widgetLayout = useSelector((state) => state.widget.widgetLayout);
   const pathname = usePathname();
   const router = useRouter();
@@ -67,7 +68,8 @@ const PreviewWidgets = () => {
       try {
         setLoading(true);
         setError(null);
-        const articlesData = await handleFeeds({ topic: topic ?? "" });
+        console.log(topic, rssFeed);
+        const articlesData = await handleFeeds({ topic: topic ?? "", rssFeed: rssFeed ?? "" });
         if (!articlesData || articlesData.length === 0) {
           throw new Error("No articles found");
         }
@@ -80,12 +82,12 @@ const PreviewWidgets = () => {
       }
     };
 
-    if (topic) {
+    if (topic || rssFeed) {
       fetchArticles();
     } else {
       setLoading(false);
     }
-  }, [topic]);
+  }, [topic, rssFeed]);
 
   useEffect(() => {
     if (widgetLayout) {

@@ -23,7 +23,7 @@ import ListViewImage from "../../../public/list-view.png";
 const FeedLayoutSection = () => {
   const dispatch = useDispatch();
   const widgetLayoutState = useSelector((state) => state.widget.widgetLayout);
-  const [view, setView] = useState("MagazineView");
+  const [view, setView] = useState("MagazineView01");
 
   const viewExamples = {
     MagazineView: [

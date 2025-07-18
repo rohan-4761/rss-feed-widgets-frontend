@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import formatDate from '../../utils/formatDate';
 
-const MagazineView02 = ({ feeds,widgetStateJSON=null  }) => {
+const MagazineView02 = ({ feeds, widgetStateJSON=null  }) => {
   // Get styling properties from widget state
   const widgetState = widgetStateJSON && Object.keys(widgetStateJSON).length > 0 
   ? widgetStateJSON
@@ -61,7 +61,8 @@ const MagazineView02 = ({ feeds,widgetStateJSON=null  }) => {
     }
   };
 
-  if (!feeds || feeds.length === 0) {
+  if (!feeds || feeds.length === 0 || !Array.isArray(feeds) ) {
+    console.log(typeof feeds);
     return (
       <div 
         className="text-gray-500 mx-auto"
@@ -108,7 +109,7 @@ const MagazineView02 = ({ feeds,widgetStateJSON=null  }) => {
         {widgetTitle}
       </h2>
 
-      {feeds.slice(0, Math.min(displayNoOfPost, feeds.length-1)).map((feed) => (
+      {Array.isArray(feeds) && feeds.slice(0, Math.min(displayNoOfPost, feeds.length-1)).map((feed) => (
         <div
           key={feed.id}
           className={`flex flex-col items-start justify-center w-full p-4 mb-4 shadow-sm ${getTextAlignmentClass()}`}

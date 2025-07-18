@@ -1,9 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
 import _set from "lodash/set";
-import { loadFromLocalStorage } from "@/utils/localStorage";
 
 const defaultWidgetState = {
   topic: "Business",
+  rssFeed: "",
   feedURL: "",
   widgetLayout: "MagazineView01",
   widgetTitle: "Widget Title",

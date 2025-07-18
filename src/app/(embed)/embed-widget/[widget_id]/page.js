@@ -59,8 +59,8 @@ const EmbedWidgetPage = ({ params }) => {
         setLoading(true);
         setError(null);
         const topic = widgetState.topic;
-        console.log(topic);
-        const articlesData = await handleFeeds({ topic: topic ?? "" });
+        const rssFeed = widgetState.rssFeed;
+        const articlesData = await handleFeeds({ topic: topic ?? "",  rssFeed: rssFeed ?? ""});
         if (!articlesData || articlesData.length === 0) {
           setError("No articles found");
         }

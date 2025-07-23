@@ -1,6 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import formatDate from '../../utils/formatDate';
+import formatDate from '@/utils/formatDate';
+import getTextAlignmentClass from '@/utils/getTextAlignmentClass'
 
 const MatrixGridView01 = ({ feeds,widgetStateJSON=null  }) => {
   // Get styling properties from widget state
@@ -23,6 +24,7 @@ const MatrixGridView01 = ({ feeds,widgetStateJSON=null  }) => {
       spaceBetweenItems,
     },
     feedTitle: {
+      mainTitle,
       feedTitleFontSize,
       feedTitleBold,
       feedTitleBgColor,
@@ -48,19 +50,6 @@ const MatrixGridView01 = ({ feeds,widgetStateJSON=null  }) => {
     },
   } = widgetState;
 
-  // Helper function to get text alignment class
-  const getTextAlignmentClass = () => {
-    switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
-      case 'AlignCenter':
-        return 'text-center';
-      case 'AlignRight':
-        return 'text-right';
-      default:
-        return 'text-left';
-    }
-  };
 
   const displayFeeds = feeds?.slice(0, displayNoOfPost || feeds.length) || [];
 
@@ -79,7 +68,7 @@ const MatrixGridView01 = ({ feeds,widgetStateJSON=null  }) => {
     >
       {/* Header */}
       <h2 
-        className={`border-b pb-2 ${getTextAlignmentClass()}`}
+        className={`border-b pb-2 ${getTextAlignmentClass(textAlignment)}`}
         style={{
           fontSize: `${feedTitleFontSize}px`,
           fontWeight: feedTitleBold ? 'bold' : 'normal',
@@ -89,7 +78,7 @@ const MatrixGridView01 = ({ feeds,widgetStateJSON=null  }) => {
           padding: `${padding}px`,
         }}
       >
-        {widgetTitle}
+        {mainTitle ? mainTitle : widgetTitle}
       </h2>
 
       {/* Grid Content */}
@@ -126,7 +115,7 @@ const MatrixGridView01 = ({ feeds,widgetStateJSON=null  }) => {
                     borderRadius: corner == "Square"? '0' : '8px',
                   }}
                 >
-                  <div className={getTextAlignmentClass()}>
+                  <div className={getTextAlignmentClass(textAlignment)}>
                     <p 
                       className="line-clamp-3"
                       style={{
@@ -165,7 +154,7 @@ const MatrixGridView01 = ({ feeds,widgetStateJSON=null  }) => {
           ))
         ) : (
           <div 
-            className={`col-span-3 text-center ${getTextAlignmentClass()}`}
+            className={`col-span-3 text-center ${getTextAlignmentClass(textAlignment)}`}
             style={{
               fontSize: `${contentDescFontSize}px`,
               color: contentDescColor,

@@ -8,6 +8,7 @@ const initialState = {
     user_email: "",
   },
   isLoggedIn: false,
+  token: null
 };
 
 export const userSlice = createSlice({
@@ -26,6 +27,9 @@ export const userSlice = createSlice({
       };
       state.isLoggedIn = false;
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    }
   },
 });
 

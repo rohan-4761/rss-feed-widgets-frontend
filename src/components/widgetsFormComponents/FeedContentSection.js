@@ -109,6 +109,20 @@ const FeedContentSection = () => {
               text="Bold Title"
             />
             <NumberInput
+              label="Max characters Description"
+              value={widgetContentState.title.contentTitleMaxChars}
+              onChange={(values) =>
+                dispatch(
+                  updateWidgetState({
+                    path: "feedContent.title.contentTitleMaxChars",
+                    value: values,
+                  })
+                )
+              }
+              min={3}
+            />
+
+            <NumberInput
               label="Title Size"
               value={widgetContentState.title.contentTitleFontSize}
               onChange={(value) => {

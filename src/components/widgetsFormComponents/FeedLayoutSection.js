@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   AlignJustify,
   GalleryHorizontal,
@@ -19,20 +19,18 @@ import MatrixGridView02 from "../../../public/matrix-grid-view-2.png";
 import CarouselView01 from "../../../public/carousel-1.png";
 import CarouselView02 from "../../../public/carousel-2.png";
 import ListViewImage from "../../../public/list-view.png";
+import Spinner from "../ui/Spinner";
 
 const FeedLayoutSection = () => {
   const dispatch = useDispatch();
   const widgetLayoutState = useSelector((state) => state.widget.widgetLayout);
-  const [view, setView] = useState("MagazineView01");
 
   const viewExamples = {
     MagazineView: [
       { name: "MagazineView01", image: MagazineView01 },
       { name: "MagazineView02", image: MagazineView02 },
     ],
-    ListView: [
-      { name: "ListView", image: ListViewImage },
-    ],
+    ListView: [{ name: "ListView", image: ListViewImage }],
     MatrixCardView: [
       { name: "MatrixCardView01", image: MatrixCardView01 },
       { name: "MatrixCardView02", image: MatrixCardView02 },
@@ -47,13 +45,19 @@ const FeedLayoutSection = () => {
     ],
   };
 
+  const getLayoutCategory = (layoutName) => {
+    return Object.entries(viewExamples).find(([_, layouts]) =>
+      layouts.some((layout) => layout.name === layoutName)
+    )?.[0];
+  };
+
+  const [view, setView] = useState(() => getLayoutCategory(widgetLayoutState) || "MagazineView");
+
   const renderViewLayouts = (viewLayouts) => {
     const layouts = viewExamples[viewLayouts];
+    if (!layouts || layouts.length === 0) return null;
 
-    if (
-      layouts.length > 0 &&
-      !layouts.some((layout) => layout.name === widgetLayoutState)
-    ) {
+    if (!layouts.some((layout) => layout.name === widgetLayoutState)) {
       dispatch(
         updateWidgetState({
           path: "widgetLayout",
@@ -62,22 +66,22 @@ const FeedLayoutSection = () => {
       );
     }
 
-    return layouts.map((layout, index) => (
+    return layouts.map((layout) => (
       <Image
-        onClick={() =>
+        onClick={() => {
           dispatch(
             updateWidgetState({
               path: "widgetLayout",
               value: layout.name,
             })
-          )
-        }
+          );
+        }}
         className={
           widgetLayoutState === layout.name
             ? "border-2 border-solid border-blue-800"
-            : "border-1 border-white"
+            : "border border-white"
         }
-        key={index}
+        key={layout.name}
         src={layout.image}
         width={350}
         height={600}

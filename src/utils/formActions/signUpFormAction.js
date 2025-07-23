@@ -1,8 +1,8 @@
 "use client";
 
-
-import { apiRoutes } from "@/constants/routes";
-import { signUpFormSchema } from "@/lib/signUpFormSchema";
+import { apiRoute } from "@/constants/routes";
+import { signUpFormSchema } from "@/lib/formSchema/signUpFormSchema";
+import { saveToLocalStorage } from "../localStorage";
 
 const signUpFormAction = async (prevState, formData) => {
   const validatedFields = signUpFormSchema.safeParse({
@@ -20,7 +20,7 @@ const signUpFormAction = async (prevState, formData) => {
   delete dataToSend.confirm_password;
 
   try {
-    const response = await fetch(apiRoutes["SIGNUP"], {
+    const response = await fetch(apiRoute["SIGNUP"], {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -32,16 +32,22 @@ const signUpFormAction = async (prevState, formData) => {
     const result = await response.json();
 
     if (result.success) {
-      document.cookie = `token=${result.token}; Secure; SameSite=None; path=/; max-age=3600`; // Set token in cookie for 1 hour
+      
+      const authHeader = response.headers.get("Authorization")
+      const token = authHeader.split(' ')[1]
+      document.cookie = `token=${token}; Secure; SameSite=None; path=/; max-age=${60*60*24}`; // Set token in cookie for 1 hour
+      
+      const userToStore = {
+          id: result.user.id,
+          user_name: result.user.user_name,
+          user_email: result.user.user_email,
+        };
+      saveToLocalStorage("user", userToStore);
       
       return {
         success: true,
         message: result.message,
-        user: {
-          id: result.user.id,
-          user_name: result.user.user_name,
-          user_email: result.user.user_email,
-        },
+        user: userToStore
       };
     } else {
       const responseMessage = {

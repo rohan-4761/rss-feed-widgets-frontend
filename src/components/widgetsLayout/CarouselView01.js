@@ -2,6 +2,7 @@ import { useSelector } from 'react-redux';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import formatDate from '../../utils/formatDate';
+import getTextAlignmentClass from '@/utils/getTextAlignmentClass';
 
 const CarouselView01 = ({ feeds, widgetStateJSON=null }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -46,19 +47,6 @@ const CarouselView01 = ({ feeds, widgetStateJSON=null }) => {
 
   const goToNext = () => {
     setCurrentIndex(currentIndex === feeds.length - 1 ? 0 : currentIndex + 1);
-  };
-
-  const getTextAlignmentClass = () => {
-    switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
-      case 'AlignCenter':
-        return 'text-center';
-      case 'AlignRight':
-        return 'text-right';
-      default:
-        return 'text-left';
-    }
   };
 
   if (!feeds || feeds.length === 0) {
@@ -131,7 +119,7 @@ const CarouselView01 = ({ feeds, widgetStateJSON=null }) => {
 
       {/* Text Info Area (15%) */}
       <div
-        className={`flex flex-col justify-center ${getTextAlignmentClass()}`}
+        className={`flex flex-col justify-center ${getTextAlignmentClass(textAlignment)}`}
         style={{
           flex: '0 0 15%',
           backgroundColor: contentbgColor,

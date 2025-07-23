@@ -13,7 +13,7 @@ import {
   CREATE_AND_EMBED_WIDGET_DEMO,
 } from "@/constants/video-sources";
 import PreviewWidgets from "@/components/PreviewWidgets";
-import { getWidgets } from "@/utils/handleWidgets";
+import { getWidgets } from "@/utils/handleFunctions/handleWidgets";
 import { saveToLocalStorage, loadFromLocalStorage } from "@/utils/localStorage";
 
 const Create = ({ params }) => {
@@ -30,28 +30,24 @@ const Create = ({ params }) => {
   };
 
   useEffect(() => {
-    const storedWidget = loadFromLocalStorage("widget");
-    if (storedWidget) {
-      dispatch(setFullWidget(storedWidget));
-    }
-    setIsHydrated(true);
-  }, []);
-
-  useEffect(() => {
     const getWidgetById = async (widgetId) => {
       try {
         const res = await getWidgets(widgetId);
         if (res.success) {
-          let widgetObject;
-          if (typeof res.widgets[0].widget_data === "string") {
-            widgetObject = JSON.parse(res.widgets[0].widget_data);
-          } else {
-            widgetObject = res.widgets[0].widget_data;
-          }
+          console.log("Widget", res.widget);
+          const { id, userId, ...widgetObject } = res.widget;
+          // if (typeof res.widgets[0].widget_data === "string") {
+          //   widgetObject = JSON.parse(res.widgets[0].widget_data);
+          // } else {
+          //   widgetObject = res.widgets[0].widget_data;
+          // }
           try {
+            delete widgetObject.createdAt;
+            delete widgetObject.updatedAt;
             dispatch(setFullWidget(widgetObject));
             saveToLocalStorage("widget", widgetObject);
-            saveToLocalStorage("widget_id", res.widgets[0].id);
+            saveToLocalStorage("existingWidget", widgetObject);
+            saveToLocalStorage("widget_id", id);
             toast.success("Successfully loaded widget data.");
           } catch (error) {
             console.error("Error loading the widget:", error);
@@ -65,6 +61,14 @@ const Create = ({ params }) => {
     };
     getWidgetById(slug);
   }, [slug]);
+
+  useEffect(() => {
+    const storedWidget = loadFromLocalStorage("widget");
+    if (storedWidget) {
+      dispatch(setFullWidget(storedWidget));
+    }
+    setIsHydrated(true);
+  }, []);
 
   if (!isHydrated) return null;
 

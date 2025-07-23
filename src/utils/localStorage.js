@@ -23,12 +23,15 @@ export const loadFromLocalStorage = (key) => {
   }
 };
 
-export const removeWidgetsFromLocalStorage = () => {
+export const removeWidgetsFromLocalStorage = (edit = false) => {
   try{
     if(typeof window === "undefined") return undefined;
     localStorage.removeItem("widget");
     if (localStorage.key("widget_id")){
       localStorage.removeItem("widget_id");
+    }
+    if (localStorage.key("existingWidget") && edit){
+      localStorage.removeItem("existingWidget");
     }
   } catch(err) {
     console.warn("Delete from localStorage failed: ", err);

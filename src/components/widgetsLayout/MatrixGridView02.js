@@ -80,7 +80,7 @@ const MatrixGridView02 = ({ feeds, widgetStateJSON=null }) => {
             color: feedTitleFontColor,
           }}
         >
-          {mainTitle ?? widgetTitle}
+          {mainTitle ? mainTitle : widgetTitle}
         </h2>
       </div>
 

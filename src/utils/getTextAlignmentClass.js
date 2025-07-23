@@ -1,7 +1,7 @@
 const getTextAlignmentClass = (textAlignment) => {
     switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
+      case 'AlignJustify':
+        return 'text-justify';
       case 'AlignCenter':
         return 'text-center';
       case 'AlignRight':

@@ -1,34 +1,54 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import {useRouter} from 'next/navigation';
-import { useState, useActionState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState, useActionState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { toast } from "react-toastify";
 
-import { setUser } from '@/lib/features/userSlice';
-import {signUpFormAction} from '@/utils/signUpFormAction';
-import { route } from '@/constants/routes';
+import { setUser } from "@/lib/features/userSlice";
+import { signUpFormAction } from "@/utils/formActions/signUpFormAction";
+import { route } from "@/constants/routes";
 
 export default function SignupPage() {
   const dispatch = useDispatch();
-  const [state, action, isPending] = useActionState(signUpFormAction, "");
+  const [state, formAction] = useActionState(signUpFormAction, "");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
 
-  useEffect(()=>{
-    if(state?.success){
+  const handleSubmit = async (formData) => {
+    toast.loading("Logging you in...", { toastId: "signup-toast" });
+    formAction(formData);
+  };
+
+  useEffect(() => {
+    if (state?.success) {
+      // Set user data in Redux store
+      toast.update("signup-toast", {
+        position: "top-center",
+        render: `${state.user.user_name}, sign up sucessful.`,
+        type: "success",
+        isLoading: false,
+        autoClose: 5000,
+      });
       dispatch(setUser(state.user));
       router.push(route["MY_WIDGETS"]);
-      };
-    
-  }, [state, router])
-
+    } else if (state?.errorMessage) {
+      toast.update("signup-toast", {
+        position: "top-center",
+        render: state.errorMessage,
+        type: "error",
+        isLoading: false,
+        autoClose: 5000,
+      });
+    }
+  }, [state]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-semibold mb-6 text-center">Sign Up</h2>
-        <form action={action} className="space-y-4">
+        <form action={handleSubmit} className="space-y-4">
           {/* Name */}
           <div>
             <label className="block mb-1 text-sm text-gray-700">Name</label>
@@ -39,7 +59,9 @@ export default function SignupPage() {
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
-                          {state?.errors?.name && <p className='text-red-500'>{state.errors.email}</p>}
+          {state?.errors?.name && (
+            <p className="text-red-500">{state.errors.email}</p>
+          )}
 
           {/* Email */}
           <div>
@@ -51,45 +73,51 @@ export default function SignupPage() {
               className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
             />
           </div>
-                {state?.errors?.email && <p className='text-red-500'>{state.errors.email}</p>}
+          {state?.errors?.email && (
+            <p className="text-red-500">{state.errors.email}</p>
+          )}
 
           {/* Password */}
           <div>
             <label className="block mb-1 text-sm text-gray-700">Password</label>
             <div className="relative">
               <input
-                type={showPassword ? 'text' : 'password'}
+                type={showPassword ? "text" : "password"}
                 required
                 name="password"
                 className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
               />
-              
+
               {state?.errors?.password && (
-                  <div>
-                    <p className='text-red-500'>Password must:</p>
-                    <ul>
-                      {state.errors.password.map((error) => (
-                        <li className='text-red-500' key={error}>- {error}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
+                <div>
+                  <p className="text-red-500">Password must:</p>
+                  <ul>
+                    {state.errors.password.map((error) => (
+                      <li className="text-red-500" key={error}>
+                        - {error}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
               <button
                 type="button"
                 onClick={() => setShowPassword((prev) => !prev)}
                 className="absolute right-2 top-1/2 -translate-y-1/2 text-sm text-blue-600 hover:underline"
               >
-                {showPassword ? 'Hide' : 'Show'}
+                {showPassword ? "Hide" : "Show"}
               </button>
             </div>
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block mb-1 text-sm text-gray-700">Confirm Password</label>
+            <label className="block mb-1 text-sm text-gray-700">
+              Confirm Password
+            </label>
             <div className="relative">
               <input
-                type='password'
+                type="password"
                 required
                 name="confirm_password"
                 className="w-full px-4 py-2 border rounded-md focus:ring-2 focus:ring-blue-500"
@@ -106,14 +134,13 @@ export default function SignupPage() {
         </form>
 
         <div className="mt-6 text-sm text-center">
-          Already have an account?{' '}
+          Already have an account?{" "}
           <Link href={route["LOGIN"]} className="text-blue-500 hover:underline">
             Log in
           </Link>
         </div>
       </div>
-            {state?.success && console.log(state?.message)}
-
+      {state?.success && console.log(state?.message)}
     </div>
-  )
+  );
 }

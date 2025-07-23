@@ -4,20 +4,34 @@ import { usePathname } from "next/navigation";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
-import { handleFeeds } from "@/utils/handleFeeds";
-import { updateWidgetState, resetWidget } from "@/lib/features/widgetSlice";
-import MagazineView01 from "./widgetsLayout/MagazineView01";
-import MagazineView02 from "./widgetsLayout/MagazineView02";
-import ListView from "./widgetsLayout/ListView";
-import MatrixCardView01 from "./widgetsLayout/MatrixCardView01";
-import MatrixCardView02 from "./widgetsLayout/MatrixCardView02";
-import MatrixGridView01 from "./widgetsLayout/MatrixGridView01";
-import MatrixGridView02 from "./widgetsLayout/MatrixGridView02";
-import CarouselView01 from "./widgetsLayout/CarouselView01";
-import CarouselView02 from "./widgetsLayout/CarouselView02";
+import MagazineView01 from "@/components/widgetsLayout/MagazineView01";
+import MagazineView02 from "@/components/widgetsLayout/MagazineView02";
+import ListView from "@/components/widgetsLayout/ListView";
+import MatrixCardView01 from "@/components/widgetsLayout/MatrixCardView01";
+import MatrixCardView02 from "@/components/widgetsLayout/MatrixCardView02";
+import MatrixGridView01 from "@/components/widgetsLayout/MatrixGridView01";
+import MatrixGridView02 from "@/components/widgetsLayout/MatrixGridView02";
+import CarouselView01 from "@/components/widgetsLayout/CarouselView01";
+import CarouselView02 from "@/components/widgetsLayout/CarouselView02";
+
 import { route } from "@/constants/routes";
-import { saveEditedWidgets, saveNewWidgets } from "@/utils/handleWidgets";
-import { removeWidgetsFromLocalStorage } from "@/utils/localStorage";
+
+import widgetFormSchema from "@/lib/formSchema/widgetFormSchema";
+import {
+  updateWidgetState,
+  resetWidget,
+  setFullWidget,
+} from "@/lib/features/widgetSlice";
+
+import { handleFeeds } from "@/utils/handleFunctions/handleFeeds";
+import {
+  saveEditedWidgets,
+  saveNewWidgets,
+} from "@/utils/handleFunctions/handleWidgets";
+import {
+  loadFromLocalStorage,
+  removeWidgetsFromLocalStorage,
+} from "@/utils/localStorage";
 
 const PreviewWidgets = () => {
   const [loading, setLoading] = useState(true);
@@ -33,22 +47,56 @@ const PreviewWidgets = () => {
 
   const handleSave = async () => {
     try {
-      const widget_data = JSON.parse(localStorage.getItem("widget"));
+      const widget_data = loadFromLocalStorage("widget");
+      console.log("widget_data before validation:", widget_data);
+      const validationResult = widgetFormSchema.safeParse(widget_data);
+
+      if (!validationResult.success) {
+        const { fieldErrors, formErrors } = validationResult.error.flatten();
+
+        if (formErrors?.length > 0) {
+          toast.error(formErrors.join(", "));
+          console.log("Form-level errors:", formErrors);
+        }
+
+        for (const key in fieldErrors) {
+          const messages = fieldErrors[key];
+          if (messages?.length > 0) {
+            toast.error(`${key}: ${messages.join(", ")}`);
+            console.warn(`${key}: ${messages.join(", ")}`);
+          }
+        }
+
+        console.log(
+          "Full error object for debug:",
+          validationResult.error.format()
+        );
+
+        return;
+      }
+
+      const validWidgetData = validationResult.data;
+      console.log("pathname", pathname);
       if (pathname.startsWith(route["EDIT_WIDGET"])) {
         const segments = pathname.split("/");
         const widget_id = segments[segments.length - 1];
-        const res = await saveEditedWidgets(widget_id, widget_data);
-        
+        const savedWidgetData = loadFromLocalStorage("existingWidget");
+        const res = await saveEditedWidgets(
+          widget_id,
+          validWidgetData,
+          savedWidgetData
+        );
+        console.log(res);
         if (res.success) {
           toast.success(res.message);
-          removeWidgetsFromLocalStorage();
+          removeWidgetsFromLocalStorage(true);
           dispatch(resetWidget());
           router.push(route["MY_WIDGETS"]);
         } else {
           toast.error(res.message);
         }
       } else if (pathname.startsWith(route["CREATE_WIDGETS"])) {
-        const res = await saveNewWidgets(widget_data);
+        const res = await saveNewWidgets(validWidgetData);
         if (res.success) {
           toast.success(res.message);
           removeWidgetsFromLocalStorage();
@@ -63,13 +111,26 @@ const PreviewWidgets = () => {
     }
   };
 
+  const handleResetWidget = () => {
+    removeWidgetsFromLocalStorage();
+    const storedWidget = loadFromLocalStorage("existingWidget");
+    if (storedWidget) {
+      dispatch(setFullWidget(storedWidget));
+    } else {
+      dispatch(resetWidget());
+    }
+  };
+
   useEffect(() => {
     const fetchArticles = async () => {
       try {
         setLoading(true);
         setError(null);
         console.log(topic, rssFeed);
-        const articlesData = await handleFeeds({ topic: topic ?? "", rssFeed: rssFeed ?? "" });
+        const articlesData = await handleFeeds({
+          topic: topic ?? "",
+          rssFeed: rssFeed ?? "",
+        });
         if (!articlesData || articlesData.length === 0) {
           throw new Error("No articles found");
         }
@@ -101,8 +162,8 @@ const PreviewWidgets = () => {
     if (!previewLayout) {
       return <div>Loading Preview...</div>;
     }
-    console.log(previewLayout) 
-    console.log("Article: ",articles[0]) 
+    console.log(previewLayout);
+    console.log("Article: ", articles[0]);
     switch (previewLayout) {
       case "MagazineView01":
         return <MagazineView01 feeds={articles} />;
@@ -128,7 +189,7 @@ const PreviewWidgets = () => {
   };
 
   if (loading || error || !widgetLayout) {
-    console.log(widgetLayout)
+    console.log(widgetLayout);
     return (
       <section className="bg-white p-6 shadow rounded-lg space-y-6 mt-6">
         <div className="text-center text-gray-500">
@@ -164,7 +225,7 @@ const PreviewWidgets = () => {
           </button>
           <button
             className="bg-gray-200 text-sm text-red-600 px-4 py-2 rounded-lg ml-2 hover:bg-red-700 hover:text-white transition-colors"
-            onClick={() => dispatch(resetWidget())}
+            onClick={() => handleResetWidget()}
           >
             Reset
           </button>

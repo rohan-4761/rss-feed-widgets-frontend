@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 
 import UserModal from "./modal/UserModal";
 import { route } from "@/constants/routes";
-import { handleFeeds } from "@/utils/handleFeeds";
+import { handleFeeds } from "@/utils/handleFunctions/handleFeeds";
 
 export default function Navbar() {
   const [hasMounted, setHasMounted] = useState(false);

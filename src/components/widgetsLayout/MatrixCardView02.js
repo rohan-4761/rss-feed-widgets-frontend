@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import formatDate from '../../utils/formatDate';
+import formatDate from '@/utils/formatDate';
+import getTextAlignmentClass from '@/utils/getTextAlignmentClass'
 
 const MatrixCardView02 = ({ feeds, widgetStateJSON=null }) => {
   // Get styling properties from widget state
@@ -22,6 +23,7 @@ const MatrixCardView02 = ({ feeds, widgetStateJSON=null }) => {
       spaceBetweenItems,
     },
     feedTitle: {
+      mainTitle,
       feedTitleFontSize,
       feedTitleBold,
       feedTitleBgColor,
@@ -47,20 +49,6 @@ const MatrixCardView02 = ({ feeds, widgetStateJSON=null }) => {
     },
   } = widgetState;
 
-  // Helper function to get text alignment class
-  const getTextAlignmentClass = () => {
-    switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
-      case 'AlignCenter':
-        return 'text-center';
-      case 'AlignRight':
-        return 'text-right';
-      default:
-        return 'text-left';
-    }
-  };
-
   return (
     <div 
       className="overflow-hidden mx-auto"
@@ -82,14 +70,14 @@ const MatrixCardView02 = ({ feeds, widgetStateJSON=null }) => {
         }}
       >
         <h2 
-          className={`${getTextAlignmentClass()}`}
+          className={`${getTextAlignmentClass(textAlignment)}`}
           style={{
             fontSize: `${feedTitleFontSize}px`,
             fontWeight: feedTitleBold ? 'bold' : 'normal',
             color: feedTitleFontColor,
           }}
         >
-          {widgetTitle}
+          {mainTitle ? mainTitle : widgetTitle}
         </h2>
       </div>
 
@@ -109,7 +97,7 @@ const MatrixCardView02 = ({ feeds, widgetStateJSON=null }) => {
           {feeds.slice(0, displayNoOfPost).map((feed) => (
             <div
               key={feed.id}
-              className={`shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-200 ${getTextAlignmentClass()}`}
+              className={`shadow-sm overflow-hidden cursor-pointer hover:shadow-md transition-shadow duration-200 ${getTextAlignmentClass(textAlignment)}`}
               style={{
                 backgroundColor: contentbgColor,
                 border: border ? `1px solid ${borderColor}` : 'none',

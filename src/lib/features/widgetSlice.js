@@ -30,7 +30,7 @@ const defaultWidgetState = {
     feedTitleFontColor: "#acadae",
   },
   feedContent: {
-    displayNoOfPost: 25,
+    displayNoOfPost: 5,
     displayLink: false,
     contentbgColor: "#ffffff",
     showAuthorAndDate: true,
@@ -38,7 +38,7 @@ const defaultWidgetState = {
     title: {
       showContentTitle: true,
       contentTitleBold: false,
-      contentTitlemaxChars: 50,
+      contentTitleMaxChars: 50,
       contentTitleFontSize: 14,
       contentTitleColor: "#0077b5",
     },

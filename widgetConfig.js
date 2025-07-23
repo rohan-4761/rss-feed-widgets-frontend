@@ -37,7 +37,7 @@ const defaultWidgetState = {
     title: {
       showContentTitle: true,
       contentTitleBold: false,
-      contentTitlemaxChars: 50,
+      contentTitleMaxChars: 50,
       contentTitleFontSize: 14,
       contentTitleColor: "#0077b5",
     },

@@ -16,5 +16,4 @@ const loginFormSchema = z.object({
         .trim(),
 })
 
-
 export {loginFormSchema};

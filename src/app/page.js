@@ -17,7 +17,7 @@ import UserModal from "@/components/modal/UserModal";
 import CompactList from "@/components/articleComponents/CompactList";
 import CardViewList from "@/components/articleComponents/CardViewList";
 import { sources, topics } from "@/constants/metadata";
-import { handleFeeds } from "@/utils/handleFeeds";
+import { handleFeeds } from "@/utils/handleFunctions/handleFeeds";
 import timeAgo from "@/utils/timeAgo";
 import Sidebar from "@/components/Sidebar";
 

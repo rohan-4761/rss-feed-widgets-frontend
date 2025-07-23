@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import formatDate from '../../utils/formatDate';
+import formatDate from '@/utils/formatDate';
+import getTextAlignmentClass from '@/utils/getTextAlignmentClass'
 
 const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
   // Get styling properties from widget state
@@ -22,6 +23,7 @@ const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
       spaceBetweenItems,
     },
     feedTitle: {
+      mainTitle,
       feedTitleFontSize,
       feedTitleBold,
       feedTitleBgColor,
@@ -47,19 +49,6 @@ const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
     },
   } = widgetState;
 
-  // Helper function to get text alignment class
-  const getTextAlignmentClass = () => {
-    switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
-      case 'AlignCenter':
-        return 'text-center';
-      case 'AlignRight':
-        return 'text-right';
-      default:
-        return 'text-left';
-    }
-  };
 
   const renderFeeds = (feeds) => {
     return feeds.slice(0, displayNoOfPost).map((feed, index) => (
@@ -81,7 +70,7 @@ const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
           <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
             {showContentTitle && (
               <h3 
-                className={`leading-tight bg-grey-400 bg-opacity-50 ${getTextAlignmentClass()}`}
+                className={`leading-tight bg-grey-400 bg-opacity-50 ${getTextAlignmentClass(textAlignment)}`}
                 style={{
                   fontSize: `${contentTitleFontSize}px`,
                   fontWeight: contentTitleBold ? 'bold' : 'normal',
@@ -122,7 +111,7 @@ const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             {showContentTitle && (
               <h3 
-                className={`leading-tight bg-grey-400 bg-opacity-50 ${getTextAlignmentClass()}`}
+                className={`leading-tight bg-grey-400 bg-opacity-50 ${getTextAlignmentClass(textAlignment)}`}
                 style={{
                   fontSize: `${contentTitleFontSize}px`,
                   fontWeight: contentTitleBold ? 'bold' : 'normal',
@@ -163,7 +152,7 @@ const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
       }}
     >
       <h2 
-        className={`border-b pb-2 ${getTextAlignmentClass()}`}
+        className={`border-b pb-2 ${getTextAlignmentClass(textAlignment)}`}
         style={{
           fontSize: `${feedTitleFontSize}px`,
           fontWeight: feedTitleBold ? 'bold' : 'normal',
@@ -173,7 +162,7 @@ const MatrixCardView01 = ({ feeds, widgetStateJSON=null }) => {
           padding: `${padding}px`,
         }}
       >
-        {widgetTitle}
+        {mainTitle ? mainTitle : widgetTitle}
       </h2>
       
       <div 

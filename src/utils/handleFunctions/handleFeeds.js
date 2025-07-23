@@ -1,4 +1,5 @@
 import { getCookie } from "@/utils/getCookie";
+import { apiRoute } from "@/constants/routes";
 
 function isValidUrl(url) {
   try {
@@ -31,7 +32,7 @@ export const handleFeeds = async ({
 
     // Only include query string if there are params
     const queryString = params.toString();
-    const url = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/feeds${
+    const url = `${apiRoute['FEEDS']}${
       queryString ? `?${queryString}` : ""
     }`;
 

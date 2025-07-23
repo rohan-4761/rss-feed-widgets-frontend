@@ -2,8 +2,8 @@
 
 import { use, useEffect, useState } from "react";
 
-import { getWidgets } from "@/utils/handleWidgets";
-import { handleFeeds } from "@/utils/handleFeeds";
+import { getWidgets } from "@/utils/handleFunctions/handleWidgets";
+import { handleFeeds } from "@/utils/handleFunctions/handleFeeds";
 import Spinner from "@/components/ui/Spinner";
 
 import MagazineView01 from "@/components/widgetsLayout/MagazineView01";

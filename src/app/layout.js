@@ -36,7 +36,7 @@ export default function RootLayout({ children}) {
           position="top-right"
           autoClose={3000}
           hideProgressBar={false}
-          newestOnTop={false}
+          newestOnTop={true}
           closeOnClick
           pauseOnHover
           draggable

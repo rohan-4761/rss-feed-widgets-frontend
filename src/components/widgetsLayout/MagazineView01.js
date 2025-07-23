@@ -1,5 +1,6 @@
 import { useSelector } from 'react-redux';
-import formatDate from '../../utils/formatDate';
+import formatDate from '@/utils/formatDate';
+import getTextAlignmentClass from '@/utils/getTextAlignmentClass'
 
 const MagazineView01 = ({ feeds, widgetStateJSON=null }) => {
   // Get styling properties from widget state
@@ -22,6 +23,7 @@ const MagazineView01 = ({ feeds, widgetStateJSON=null }) => {
       spaceBetweenItems,
     },
     feedTitle: {
+      mainTitle,
       feedTitleFontSize,
       feedTitleBold,
       feedTitleBgColor,
@@ -46,20 +48,6 @@ const MagazineView01 = ({ feeds, widgetStateJSON=null }) => {
       },
     },
   } = widgetState;
-
-  // Helper function to get text alignment class
-  const getTextAlignmentClass = () => {
-    switch (textAlignment) {
-      case 'AlignLeft':
-        return 'text-left';
-      case 'AlignCenter':
-        return 'text-center';
-      case 'AlignRight':
-        return 'text-right';
-      default:
-        return 'text-left';
-    }
-  };
 
   if (!feeds || feeds.length === 0 || !Array.isArray(feeds)) {
     console.log(feeds);
@@ -99,7 +87,7 @@ const MagazineView01 = ({ feeds, widgetStateJSON=null }) => {
     >
       {/* Header */}
       <h2 
-        className={`border-b pb-2 mb-4 ${getTextAlignmentClass()}`}
+        className={`border-b pb-2 mb-4 ${getTextAlignmentClass(textAlignment)}`}
         style={{
           fontSize: `${feedTitleFontSize}px`,
           fontWeight: feedTitleBold ? 'bold' : 'normal',
@@ -109,13 +97,13 @@ const MagazineView01 = ({ feeds, widgetStateJSON=null }) => {
           padding: `${padding}px`,
         }}
       >
-        {widgetTitle}
+        {mainTitle ? mainTitle : widgetTitle}
       </h2>
 
       {feeds.slice(0, displayNoOfPost).map((feed) => (
         <div
           key={feed.id}
-          className={`flex flex-row items-center justify-between w-full h-full p-4 ${getTextAlignmentClass()}`}
+          className={`flex flex-row items-center justify-between w-full h-full p-4 ${getTextAlignmentClass(textAlignment)}`}
           style={{
             marginBottom: `${spaceBetweenItems}px`,
             borderRadius: corner == "Square"? '0' : '8px',

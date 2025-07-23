@@ -25,6 +25,7 @@ const ListView = ({ feeds, widgetStateJSON=null }) => {
       spaceBetweenItems,
     },
     feedTitle: {
+      mainTitle,
       feedTitleFontSize,
       feedTitleBold,
       feedTitleBgColor,
@@ -77,7 +78,7 @@ const ListView = ({ feeds, widgetStateJSON=null }) => {
           padding: `${padding}px`,
         }}
       >
-        {widgetTitle}
+        {mainTitle ? mainTitle : widgetTitle}
       </h2>
 
       {feeds && feeds.length > 0 ? (

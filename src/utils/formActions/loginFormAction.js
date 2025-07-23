@@ -1,7 +1,7 @@
 "use client";
-import { apiRoutes } from "@/constants/routes";
-import { loginFormSchema } from "@/lib/loginFormSchema";
-import { saveToLocalStorage } from "./localStorage";
+import { apiRoute } from "@/constants/routes";
+import { loginFormSchema } from "@/lib/formSchema/loginFormSchema";
+import { saveToLocalStorage } from "@/utils/localStorage";
 
 export const loginFormAction = async (prevState, formData) => {
   const validatedFields = loginFormSchema.safeParse({
@@ -16,25 +16,14 @@ export const loginFormAction = async (prevState, formData) => {
   }
 
   try {
-    const response = await fetch(apiRoutes["LOGIN"], {
+    const response = await fetch(apiRoute["LOGIN"], {
       method: "POST",
-      credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "include",
       body: JSON.stringify(validatedFields.data),
     });
-
-    // const contentType = response.headers.get("content-type");
-    // const raw = await response.text(); // Always read as text first
-    // console.log(raw);
-    // if (!contentType || !contentType.includes("application/json")) {
-    //   console.error("Non-JSON response:", raw);
-    //   return {
-    //     success: false,
-    //     errorMessage: "Invalid server response.",
-    //   };
-    // }
 
     const result = await response.json();
 
@@ -46,7 +35,9 @@ export const loginFormAction = async (prevState, formData) => {
         user_name: result.user.user_name,
         user_email: result.user.user_email,
       };
-      document.cookie = `token=${result.token}; Secure; SameSite=None; path=/; max-age=3600`; // Set token in cookie for 1 hour
+      const authHeader = response.headers.get("Authorization")
+      const token = authHeader.split(' ')[1]
+      document.cookie = `token=${token}; Secure; SameSite=None; path=/; max-age=${60*60*24}`; // Set token in cookie for 1 hour
       saveToLocalStorage("user", userToStore);
       return {
         success: true,

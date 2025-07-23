@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Pencil, Trash } from "lucide-react";
+import { Pencil } from "lucide-react";
 import Link from "next/link";
 import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 import { route } from "@/constants/routes";
-import { getWidgets, deleteWidget } from "@/utils/handleWidgets";
+import { getWidgets, deleteWidget } from "@/utils/handleFunctions/handleWidgets";
 import WidgetEmbedModal from "@/components/modal/WidgetEmbedModal";
 import Spinner from "@/components/ui/Spinner";
 
@@ -25,6 +25,7 @@ const Widget = () => {
         setLoading(true);  
         const res = await getWidgets();
         if (res.success) {
+          console.log("Widgets Data: ", res.widgets);
           setWidgets(res.widgets);
         } else {
           toast.error("Failed to fetch widgets:", res.message);
@@ -106,7 +107,7 @@ const Widget = () => {
               {widgets.map((widget) => (
                 <tr key={widget.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-2 border-r">
-                    {widget.widget_title}
+                    {widget.widgetTitle}
                     <Pencil
                       size={16}
                       className="inline-block ml-2 text-blue-600 cursor-pointer"
@@ -114,11 +115,11 @@ const Widget = () => {
                   </td>
                   <td className="px-4 py-2 border-r">
                     <Link
-                      href={"/widget/create"}
+                      href={widget.rssFeed || widget.feedURL}
                       className="text-blue-600 hover:underline break-words"
                       target="_blank"
                     >
-                      {widget.widget_data.rssFeed ??  widget.widget_data.feedURL}
+                      {widget.rssFeed || widget.feedURL}
                     </Link>
                   </td>
                   <td className="px-4 py-2 space-x-2">
@@ -128,14 +129,14 @@ const Widget = () => {
                     >
                       Delete
                     </button>
-                    <button
+                    {/* <button
                       className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
                       onClick={() => {
                         handleEmbedWidget(widget.id, widget.widget_data);
                       }}
-                    >
+                    > 
                       Embed Code
-                    </button>
+                    </button> */}
                     <button
                       className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
                       onClick={() =>

@@ -1,20 +1,39 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { X, Copy, Code } from "lucide-react";
 import { toast } from "react-toastify";
 
-import generateWidgetIframeHTML from '@/utils/iframeGenerator';
+import { getWidgets } from "@/utils/handleFunctions/handleWidgets";
+import generateWidgetIframeHTML from "@/utils/iframeGenerator";
 
-export default function WidgetEmbedModal({ isOpen, onClose, widgetId, widgetData }) {
+export default function WidgetEmbedModal({ isOpen, onClose, widgetId }) {
   const jsCode = `<!-- start widget code --><script type="text/javascript" src="https://www.feedspot.com/widgets/Assets/js/wd-iframecontent.js" data-wd-id="V1xF625bf3ee"></script><!-- end widget code -->`;
-  const height = widgetData.general.height;
-  const width = widgetData.general.width;
-  console.log(height, width, widgetId);
-    const iframeCode = generateWidgetIframeHTML({widgetId, width, height});
+  const [widgetData, setWidgetData] = useState({});
+  const [iframeCode, setIframeCode] = useState("")
 
+  console.log(widgetId);
+  
   const handleCopy = (value) => {
     navigator.clipboard.writeText(value);
     toast.info("Widget Code has been copied.");
   };
+  
+  useEffect(() => {
+    const getWidgetConfigById = async (widgetId) => {
+      try {
+        const res = await getWidgets(widgetId);
+        if (res.success) {
+          console.log("Widget Data Response: ",res.widget)
+          setWidgetData(res.widget);
+          setIframeCode(generateWidgetIframeHTML(widgetId, res.widget));
+        }
+      } catch (error) {
+        console.error("Error loading the widget:", error);
+        toast.error("Error loading the widget: " + error.message);
+      }
+    };
+    getWidgetConfigById(widgetId);
+  }, [widgetId]);
+  
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
@@ -72,7 +91,7 @@ export default function WidgetEmbedModal({ isOpen, onClose, widgetId, widgetData
                 <textarea
                   readOnly
                   className="w-full h-20 bg-transparent border-none resize-none text-sm font-mono text-gray-700 focus:outline-none"
-                  value={iframeCode}
+                  value={iframeCode || "Generating..."}
                 />
               </div>
 

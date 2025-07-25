@@ -12,24 +12,29 @@
  * @param {string} [options.scrolling='no'] - Scrolling attribute
  * @returns {string} - The HTML <iframe> embed code as a string
  */
-function generateWidgetIframeHTML({
-  widgetId,
-  width = '100%',
-  height = '450',
-  className = 'widget_preview_iframe',
-  frameborder = '0',
-  allow = 'autoplay; encrypted-media',
-  allowFullscreen = true,
-  scrolling = 'no',
-} = {}) {
-  if (!widgetId) {
-    console.error('Widget ID is required');
-    return '';
+function generateWidgetIframeHTML(widgetId, widgetData) {
+  try{
+    if (!widgetId || !widgetData || !widgetData.general) {
+      console.error("Widget ID and Widget Data is required");
+      return `Widget Data: ${widgetData.general}`;
+    }
+    const width = widgetData.general.width || "100%";
+    const height = widgetData.general.height || "450";
+    const className = "widget_preview_iframe";
+    const frameborder = "0";
+    const allow = "autoplay; encrypted-media";
+    const allowFullscreen = true;
+    const scrolling = "no";
+    
+    const src = `https://frontend.localhost/embed-widget/${widgetId}`;
+    
+    return `<iframe class="${className}" frameborder="${frameborder}" allow="${allow}" ${
+      allowFullscreen ? "allowfullscreen" : ""
+      } scrolling="${scrolling}" style="visibility: visible; width: ${width}px; height: ${height}px;" src="${src}"></iframe>`;
+  } catch (error) {
+    console.log(widgetData)
+    return `Widget Data: ${widgetData.general}\nError: ${error}`
   }
-
-  const src = `https://frontend.localhost/embed-widget/${widgetId}`;
-
-  return `<iframe class="${className}" frameborder="${frameborder}" allow="${allow}" ${allowFullscreen ? 'allowfullscreen' : ''} scrolling="${scrolling}" style="visibility: visible; width: ${width}px; height: ${height}px;" src="${src}"></iframe>`;
 }
 
 export default generateWidgetIframeHTML;

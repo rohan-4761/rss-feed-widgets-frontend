@@ -31,14 +31,14 @@ const EmbedWidgetPage = ({ params }) => {
       try {
         const res = await getWidgets(widgetId);
         if (res.success) {
-          let widgetObject;
-          if (typeof res.widgets[0].widget_data === "string") {
-            widgetObject = JSON.parse(res.widgets[0].widget_data);
-          } else {
-            widgetObject = res.widgets[0].widget_data;
+          const { id, userId, ...widgetObject } = res.widget;
+          if (typeof widgetObject === "string") {
+            widgetObject = JSON.parse(widgetObject);
           }
           try {
             console.log(widgetObject);
+            delete widgetObject.createdAt;
+            delete widgetObject.updatedAt;
             setWidgetState(widgetObject);
             setWidgetLayout(widgetObject.widgetLayout);
             console.log(widgetState);
@@ -60,7 +60,10 @@ const EmbedWidgetPage = ({ params }) => {
         setError(null);
         const topic = widgetState.topic;
         const rssFeed = widgetState.rssFeed;
-        const articlesData = await handleFeeds({ topic: topic ?? "",  rssFeed: rssFeed ?? ""});
+        const articlesData = await handleFeeds({
+          topic: topic ?? "",
+          rssFeed: rssFeed ?? "",
+        });
         if (!articlesData || articlesData.length === 0) {
           setError("No articles found");
         }

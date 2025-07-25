@@ -6,7 +6,10 @@ import { toast } from "react-toastify";
 import { useRouter } from "next/navigation";
 
 import { route } from "@/constants/routes";
-import { getWidgets, deleteWidget } from "@/utils/handleFunctions/handleWidgets";
+import {
+  getWidgets,
+  deleteWidget,
+} from "@/utils/handleFunctions/handleWidgets";
 import WidgetEmbedModal from "@/components/modal/WidgetEmbedModal";
 import Spinner from "@/components/ui/Spinner";
 
@@ -15,14 +18,13 @@ const Widget = () => {
   const [method, setMethod] = useState("GET");
   const [openModal, setOpenModal] = useState(false);
   const [openWidgetId, setOpenWidgetId] = useState();
-  const [openWidgetData, setOpenWidgetData] = useState();
 
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   useEffect(() => {
     const fetchWidgets = async () => {
       try {
-        setLoading(true);  
+        setLoading(true);
         const res = await getWidgets();
         if (res.success) {
           console.log("Widgets Data: ", res.widgets);
@@ -32,7 +34,7 @@ const Widget = () => {
         }
       } catch (error) {
         console.error("Error fetching widgets:", error);
-      } finally{
+      } finally {
         setLoading(false);
       }
     };
@@ -59,14 +61,13 @@ const Widget = () => {
     }
   };
 
-  const handleEmbedWidget = (widgetId, widgetData) => {
+  const handleEmbedWidget = (widgetId) => {
     setOpenWidgetId(widgetId);
-    setOpenWidgetData(widgetData);
     setOpenModal(true);
   };
   const closeModal = () => setOpenModal(false);
   if (loading) {
-    <Spinner />
+    <Spinner />;
   }
 
   return (
@@ -91,7 +92,6 @@ const Widget = () => {
           isOpen={openModal}
           onClose={closeModal}
           widgetId={openWidgetId}
-          widgetData={openWidgetData}
         />
       ) : (
         <div className="overflow-x-auto">
@@ -129,14 +129,14 @@ const Widget = () => {
                     >
                       Delete
                     </button>
-                    {/* <button
+                    <button
                       className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
                       onClick={() => {
                         handleEmbedWidget(widget.id, widget.widget_data);
                       }}
-                    > 
+                    >
                       Embed Code
-                    </button> */}
+                    </button>
                     <button
                       className="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700 transition"
                       onClick={() =>
